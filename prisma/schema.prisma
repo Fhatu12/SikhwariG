@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Lead {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+  sourcePath String?
+}
+
+model ServiceContent {
+  id                Int      @id @default(autoincrement())
+  key               String   @unique
+  title             String
+  intro             String?
+  body              String
+  isTradingInternal Boolean  @default(false)
+  displayOrder      Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Post {
+  id          Int        @id @default(autoincrement())
+  title       String
+  slug        String     @unique
+  excerpt     String?
+  content     String
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+}

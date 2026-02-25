@@ -5,15 +5,17 @@ import { FormEvent, useMemo, useState } from "react";
 type ContactValues = {
   fullName: string;
   email: string;
-  company: string;
+  phone: string;
   message: string;
+  website: string;
 };
 
 const INITIAL_VALUES: ContactValues = {
   fullName: "",
   email: "",
-  company: "",
+  phone: "",
   message: "",
+  website: "",
 };
 
 function validate(values: ContactValues) {
@@ -33,12 +35,18 @@ function validate(values: ContactValues) {
     errors.email = "Email must be 120 characters or fewer.";
   }
 
-  if (values.company.length > 120) {
-    errors.company = "Company name must be 120 characters or fewer.";
+  if (values.phone.trim()) {
+    if (values.phone.length > 30) {
+      errors.phone = "Phone number must be 30 characters or fewer.";
+    } else if (!/^[0-9+\-()\s]{7,30}$/.test(values.phone)) {
+      errors.phone = "Enter a valid phone number.";
+    }
   }
 
   if (!values.message.trim()) {
     errors.message = "Please add a short message.";
+  } else if (values.message.length < 10) {
+    errors.message = "Message must be at least 10 characters.";
   } else if (values.message.length > 1200) {
     errors.message = "Message must be 1200 characters or fewer.";
   }
@@ -49,21 +57,58 @@ function validate(values: ContactValues) {
 export function ContactForm() {
   const [values, setValues] = useState<ContactValues>(INITIAL_VALUES);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [submitError, setSubmitError] = useState("");
   const errors = useMemo(() => validate(values), [values]);
   const hasErrors = Object.keys(errors).length > 0;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSubmitError("");
+
     setTouched({
       fullName: true,
       email: true,
-      company: true,
+      phone: true,
       message: true,
+      website: true,
     });
 
-    if (!hasErrors) {
-      setSubmitted(true);
+    if (hasErrors) {
+      return;
+    }
+
+    setStatus("submitting");
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.fullName,
+          email: values.email,
+          phone: values.phone,
+          message: values.message,
+          website: values.website,
+          sourcePath: window.location.pathname,
+        }),
+      });
+
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      if (!response.ok) {
+        setStatus("error");
+        setSubmitError(data?.error || "We could not submit your enquiry. Please try again.");
+        return;
+      }
+
+      setStatus("success");
+      setValues(INITIAL_VALUES);
+      setTouched({});
+    } catch {
+      setStatus("error");
+      setSubmitError("We could not submit your enquiry. Please try again.");
     }
   }
 
@@ -88,7 +133,7 @@ export function ContactForm() {
           value={values.fullName}
           onBlur={() => setTouched((current) => ({ ...current, fullName: true }))}
           onChange={(event) => {
-            setSubmitted(false);
+            setStatus("idle");
             setValues((current) => ({ ...current, fullName: event.target.value }));
           }}
         />
@@ -108,7 +153,7 @@ export function ContactForm() {
           value={values.email}
           onBlur={() => setTouched((current) => ({ ...current, email: true }))}
           onChange={(event) => {
-            setSubmitted(false);
+            setStatus("idle");
             setValues((current) => ({ ...current, email: event.target.value }));
           }}
         />
@@ -118,23 +163,37 @@ export function ContactForm() {
       </label>
 
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">Company</span>
+        <span className="mb-1 block text-sm font-medium text-slate-700">Phone (optional)</span>
         <input
           className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
-          name="company"
-          type="text"
-          autoComplete="organization"
-          maxLength={120}
-          value={values.company}
-          onBlur={() => setTouched((current) => ({ ...current, company: true }))}
+          name="phone"
+          type="tel"
+          autoComplete="tel"
+          maxLength={30}
+          value={values.phone}
+          onBlur={() => setTouched((current) => ({ ...current, phone: true }))}
           onChange={(event) => {
-            setSubmitted(false);
-            setValues((current) => ({ ...current, company: event.target.value }));
+            setStatus("idle");
+            setValues((current) => ({ ...current, phone: event.target.value }));
           }}
         />
-        {touched.company && errors.company ? (
-          <p className="mt-1 text-xs text-red-600">{errors.company}</p>
+        {touched.phone && errors.phone ? (
+          <p className="mt-1 text-xs text-red-600">{errors.phone}</p>
         ) : null}
+      </label>
+
+      <label className="hidden" aria-hidden="true">
+        <span className="mb-1 block text-sm font-medium text-slate-700">Website</span>
+        <input
+          autoComplete="off"
+          name="website"
+          tabIndex={-1}
+          type="text"
+          value={values.website}
+          onChange={(event) => {
+            setValues((current) => ({ ...current, website: event.target.value }));
+          }}
+        />
       </label>
 
       <label className="block">
@@ -146,7 +205,7 @@ export function ContactForm() {
           value={values.message}
           onBlur={() => setTouched((current) => ({ ...current, message: true }))}
           onChange={(event) => {
-            setSubmitted(false);
+            setStatus("idle");
             setValues((current) => ({ ...current, message: event.target.value }));
           }}
         />
@@ -157,15 +216,22 @@ export function ContactForm() {
 
       <button
         className="rounded-[var(--radius-sm)] bg-[var(--color-brand-700)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-600)]"
+        disabled={status === "submitting"}
         type="submit"
       >
-        Book consultation
+        {status === "submitting" ? "Submitting..." : "Book consultation"}
       </button>
 
-      {submitted ? (
+      {status === "success" ? (
         <p className="rounded-[var(--radius-sm)] bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           Thank you. Your consultation request has been received and our team will follow up
           shortly.
+        </p>
+      ) : null}
+
+      {status === "error" ? (
+        <p className="rounded-[var(--radius-sm)] bg-red-50 px-3 py-2 text-sm text-red-700">
+          {submitError}
         </p>
       ) : null}
     </form>

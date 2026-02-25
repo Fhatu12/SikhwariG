@@ -15,18 +15,17 @@ export default function PrivacyPage() {
         <div className="space-y-3 text-sm leading-7 text-slate-700">
           <p>
             This website collects personal information submitted through contact forms, including
-            name, email address, company details, and message content. We also process basic website
-            log information such as IP address and request timestamp for operational and security
-            purposes.
+            name, email address, phone number (optional), and message content. We also process basic
+            website log information such as IP address and request timestamp for operational and
+            security purposes.
           </p>
           <p>
             We process this information to respond to enquiries, assess whether a consultation is
             appropriate, maintain communication records, and protect the website from abuse.
           </p>
           <p>
-            Enquiry records are stored as part of the website contact process. In this phase, this
-            page sets out the policy wording, and additional back-end integration is planned for a
-            later phase.
+            Enquiry records are stored as part of the website contact process and are retained for
+            authorised internal business use only.
           </p>
           <p>
             Default retention period: 24 months from last meaningful contact, configurable as
