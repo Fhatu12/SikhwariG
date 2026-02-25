@@ -77,8 +77,8 @@ export default async function Home() {
             <article key={item} className="rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="text-lg font-semibold text-slate-900">{item}</h3>
               <p className="mt-2 text-sm text-slate-600">
-                Initial content for Phase 1. Detailed service information will be added in later
-                releases.
+                We provide practical support aligned to operational priorities, governance needs,
+                and accountable execution.
               </p>
             </article>
           ))}

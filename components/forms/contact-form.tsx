@@ -61,6 +61,12 @@ export function ContactForm() {
   const errors = useMemo(() => validate(values), [values]);
   const hasErrors = Object.keys(errors).length > 0;
 
+  const fullNameErrorId = "contact-fullName-error";
+  const emailErrorId = "contact-email-error";
+  const phoneErrorId = "contact-phone-error";
+  const messageErrorId = "contact-message-error";
+  const statusMessageId = "contact-form-status";
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitError("");
@@ -125,7 +131,10 @@ export function ContactForm() {
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Full name *</span>
         <input
+          aria-describedby={touched.fullName && errors.fullName ? fullNameErrorId : undefined}
+          aria-invalid={touched.fullName && errors.fullName ? "true" : undefined}
           className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          id="contact-fullName"
           name="fullName"
           type="text"
           autoComplete="name"
@@ -138,14 +147,19 @@ export function ContactForm() {
           }}
         />
         {touched.fullName && errors.fullName ? (
-          <p className="mt-1 text-xs text-red-600">{errors.fullName}</p>
+          <p className="mt-1 text-xs text-red-600" id={fullNameErrorId}>
+            {errors.fullName}
+          </p>
         ) : null}
       </label>
 
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Email address *</span>
         <input
+          aria-describedby={touched.email && errors.email ? emailErrorId : undefined}
+          aria-invalid={touched.email && errors.email ? "true" : undefined}
           className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          id="contact-email"
           name="email"
           type="email"
           autoComplete="email"
@@ -158,14 +172,19 @@ export function ContactForm() {
           }}
         />
         {touched.email && errors.email ? (
-          <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+          <p className="mt-1 text-xs text-red-600" id={emailErrorId}>
+            {errors.email}
+          </p>
         ) : null}
       </label>
 
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Phone (optional)</span>
         <input
+          aria-describedby={touched.phone && errors.phone ? phoneErrorId : undefined}
+          aria-invalid={touched.phone && errors.phone ? "true" : undefined}
           className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          id="contact-phone"
           name="phone"
           type="tel"
           autoComplete="tel"
@@ -178,7 +197,9 @@ export function ContactForm() {
           }}
         />
         {touched.phone && errors.phone ? (
-          <p className="mt-1 text-xs text-red-600">{errors.phone}</p>
+          <p className="mt-1 text-xs text-red-600" id={phoneErrorId}>
+            {errors.phone}
+          </p>
         ) : null}
       </label>
 
@@ -200,7 +221,10 @@ export function ContactForm() {
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Message *</span>
         <textarea
+          aria-describedby={touched.message && errors.message ? messageErrorId : undefined}
+          aria-invalid={touched.message && errors.message ? "true" : undefined}
           className="min-h-32 w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          id="contact-message"
           name="message"
           maxLength={2000}
           value={values.message}
@@ -211,7 +235,9 @@ export function ContactForm() {
           }}
         />
         {touched.message && errors.message ? (
-          <p className="mt-1 text-xs text-red-600">{errors.message}</p>
+          <p className="mt-1 text-xs text-red-600" id={messageErrorId}>
+            {errors.message}
+          </p>
         ) : null}
       </label>
 
@@ -224,14 +250,22 @@ export function ContactForm() {
       </button>
 
       {status === "success" ? (
-        <p className="rounded-[var(--radius-sm)] bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+        <p
+          aria-live="polite"
+          className="rounded-[var(--radius-sm)] bg-emerald-50 px-3 py-2 text-sm text-emerald-700"
+          id={statusMessageId}
+        >
           Thank you. Your consultation request has been received and our team will follow up
           shortly.
         </p>
       ) : null}
 
       {status === "error" ? (
-        <p className="rounded-[var(--radius-sm)] bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p
+          aria-live="polite"
+          className="rounded-[var(--radius-sm)] bg-red-50 px-3 py-2 text-sm text-red-700"
+          id={statusMessageId}
+        >
           {submitError}
         </p>
       ) : null}

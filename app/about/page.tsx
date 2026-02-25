@@ -27,8 +27,8 @@ export default async function AboutPage() {
             engagements practical, transparent and results-focused.
           </p>
           <p>
-            Phase 1 establishes the company-facing foundation. Sector and capability depth will be
-            expanded as service collateral is finalised.
+            Our company-facing foundation is established, with sector and capability depth presented
+            in line with client requirements and documented scope.
           </p>
         </div>
       </Section>
