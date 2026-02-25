@@ -42,20 +42,6 @@ const DEFAULT_SERVICE_CONTENT: ServiceSeed[] = [
     displayOrder: 2,
   },
   {
-    key: "treasury-internal-proprietary-trading",
-    title:
-      "Treasury / Internal - Proprietary Trading and Market Activities (Internal Capital Allocation)",
-    intro: TRADING_COPY_GUARDRAIL,
-    body: [
-      "Internal market research to inform treasury decisions.",
-      "Proprietary capital allocation for company-owned funds only.",
-      "Governance-aligned risk controls and management oversight.",
-      "Performance monitoring for internal financial planning purposes.",
-    ].join("\n"),
-    isTradingInternal: true,
-    displayOrder: 3,
-  },
-  {
     key: "culinary-hospitality",
     title: "Culinary and Hospitality Services",
     intro: null,

@@ -38,6 +38,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Service not found." }, { status: 404 });
   }
 
+  if (existing.isTradingInternal) {
+    return NextResponse.json(
+      { error: "Trading service is internal and not editable from this endpoint." },
+      { status: 403 }
+    );
+  }
+
   const formData = await request.formData();
   const title = sanitizeString(formData.get("title"));
   const intro = sanitizeString(formData.get("intro"));

@@ -12,7 +12,7 @@ export default async function AdminServicesPage({ searchParams }: ServicesPagePr
   await requireAdmin("/admin/services");
 
   const params = await searchParams;
-  const services = await ensureServiceContent();
+  const services = (await ensureServiceContent()).filter((service) => !service.isTradingInternal);
 
   return (
     <AdminShell title="Service content">

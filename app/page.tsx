@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const proofItems = await getActiveProofItems();
-  const compactIndustries = INDUSTRIES_SERVED.slice(0, 6);
+  const compactIndustries = INDUSTRIES_SERVED.slice(0, 3);
 
   return (
     <>
@@ -43,7 +43,6 @@ export default async function Home() {
               <li>Professional service lines under one accountable legal entity.</li>
               <li>Enquiries handled with appropriate safeguards and POPIA awareness.</li>
               <li>Cybersecurity work is provided on an authorised basis.</li>
-              <li>Treasury proprietary trading is internal only and not offered to the public.</li>
             </ul>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
