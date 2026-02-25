@@ -21,7 +21,7 @@ export function SiteHeader() {
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <Link
-                  className="transition-colors hover:text-[var(--color-brand-700)]"
+                  className="focus-ring transition-colors hover:text-[var(--color-brand-700)]"
                   href={item.href}
                 >
                   {item.label}

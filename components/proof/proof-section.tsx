@@ -1,4 +1,5 @@
 import type { ProofItem } from "@prisma/client";
+import { Container } from "@/components/layout/container";
 import { PROOF_KIND_LABELS } from "@/lib/proof-content";
 
 type ProofSectionProps = {
@@ -23,13 +24,13 @@ export function ProofSection({
   }, {});
 
   return (
-    <section className="border-t border-slate-200 bg-white py-14 sm:py-16">
-      <div className="mx-auto max-w-[var(--container-max-width)] px-4 sm:px-6 lg:px-8">
+    <section className="border-t border-slate-200 bg-white py-10 sm:py-14">
+      <Container>
         <div className="max-w-3xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+          <h2 className="font-serif text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
             {title}
           </h2>
-          <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
+          <p className="mt-3 text-base leading-7 text-slate-600">{description}</p>
         </div>
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {Object.entries(grouped).map(([kind, kindItems]) => (
@@ -42,7 +43,7 @@ export function ProofSection({
                   <li key={item.id}>
                     {item.url ? (
                       <a
-                        className="font-medium text-[var(--color-brand-700)] hover:underline"
+                        className="text-link focus-ring font-medium"
                         href={item.url}
                         rel="noreferrer"
                         target="_blank"
@@ -59,7 +60,7 @@ export function ProofSection({
             </article>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
