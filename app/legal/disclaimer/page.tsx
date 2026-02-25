@@ -1,4 +1,3 @@
-import { LegalIdentityBlock } from "@/components/legal/legal-identity-block";
 import { TradingDisclaimerBlock } from "@/components/legal/trading-disclaimer-block";
 import { Section } from "@/components/layout/section";
 import { buildMetadata } from "@/lib/seo";
@@ -28,7 +27,6 @@ export default function DisclaimerPage() {
           </p>
         </div>
         <TradingDisclaimerBlock />
-        <LegalIdentityBlock />
       </div>
     </Section>
   );

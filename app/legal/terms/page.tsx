@@ -1,4 +1,3 @@
-import { LegalIdentityBlock } from "@/components/legal/legal-identity-block";
 import { Section } from "@/components/layout/section";
 import { buildMetadata } from "@/lib/seo";
 
@@ -31,7 +30,6 @@ export default function TermsPage() {
           </p>
           <p>These terms are governed by the laws of the Republic of South Africa.</p>
         </div>
-        <LegalIdentityBlock />
       </div>
     </Section>
   );

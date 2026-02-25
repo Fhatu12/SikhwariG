@@ -1,4 +1,3 @@
-import { LegalIdentityBlock } from "@/components/legal/legal-identity-block";
 import { Section } from "@/components/layout/section";
 import { buildMetadata } from "@/lib/seo";
 
@@ -42,7 +41,6 @@ export default function PrivacyPage() {
             disclosed publicly for security reasons.
           </p>
         </div>
-        <LegalIdentityBlock />
       </div>
     </Section>
   );
