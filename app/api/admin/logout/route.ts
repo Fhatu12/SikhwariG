@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
-import { clearAdminSession } from "@/lib/admin-auth";
+import { ADMIN_COOKIE_NAME } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
-  await clearAdminSession();
-  return NextResponse.redirect(new URL("/admin/login", request.url));
+  const response = NextResponse.redirect(new URL("/admin/login", request.url));
+  response.cookies.set({
+    name: ADMIN_COOKIE_NAME,
+    value: "",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+  return response;
 }

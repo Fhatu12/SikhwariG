@@ -29,6 +29,11 @@ It summarizes where key content lives, what guardrails apply, and how to generat
 - No server-side storage or ticketing is wired yet.
 - Planned follow-on: persist submissions with Prisma-backed storage and submission handling.
 
+## Admin and security baseline
+
+- Baseline HTTP security headers are configured globally in `next.config.ts` and apply to all routes, including `/admin` and `/api`.
+- Admin session cookies are hardened with `httpOnly`, `sameSite=lax`, `path=/`, and `secure` in production.
+
 ## SEO basics
 
 - Route metadata is defined per page through existing metadata utilities.

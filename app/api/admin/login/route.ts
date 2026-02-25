@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { getSafeAdminNextPath, setAdminSession, validateAdminCredentials } from "@/lib/admin-auth";
+import {
+  ADMIN_COOKIE_NAME,
+  ADMIN_SESSION_MAX_AGE_SECONDS,
+  createAdminSessionToken,
+  getSafeAdminNextPath,
+  validateAdminCredentials,
+} from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -14,13 +20,23 @@ export async function POST(request: Request) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  const sessionSet = await setAdminSession(username);
-  if (!sessionSet) {
+  const sessionToken = createAdminSessionToken(username);
+  if (!sessionToken) {
     const redirectUrl = new URL("/admin/login", request.url);
     redirectUrl.searchParams.set("error", "missing-env");
     redirectUrl.searchParams.set("next", nextPath);
     return NextResponse.redirect(redirectUrl);
   }
 
-  return NextResponse.redirect(new URL(nextPath, request.url));
+  const response = NextResponse.redirect(new URL(nextPath, request.url));
+  response.cookies.set({
+    name: ADMIN_COOKIE_NAME,
+    value: sessionToken,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: ADMIN_SESSION_MAX_AGE_SECONDS,
+  });
+  return response;
 }

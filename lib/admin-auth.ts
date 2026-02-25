@@ -2,8 +2,9 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const ADMIN_COOKIE_NAME = "sg_admin_session";
-const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+export const ADMIN_COOKIE_NAME = "sg_admin_session";
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+export const ADMIN_SESSION_MAX_AGE_SECONDS = SESSION_TTL_MS / 1000;
 
 type AdminSessionPayload = {
   username: string;
@@ -16,6 +17,15 @@ function getEnvOrEmpty(name: string) {
 
 function getAdminSecret() {
   return getEnvOrEmpty("ADMIN_SESSION_SECRET");
+}
+
+export function createAdminSessionToken(username: string) {
+  const secret = getAdminSecret();
+  if (!secret) {
+    return null;
+  }
+
+  return buildToken(username, secret);
 }
 
 function constantTimeEquals(a: string, b: string) {
@@ -124,38 +134,6 @@ export function validateAdminCredentials(username: string, password: string) {
     constantTimeEquals(username.trim(), configuredUsername) &&
     constantTimeEquals(password, configuredPassword)
   );
-}
-
-export async function setAdminSession(username: string) {
-  const secret = getAdminSecret();
-  if (!secret) {
-    return false;
-  }
-
-  const cookieStore = await cookies();
-  cookieStore.set({
-    name: ADMIN_COOKIE_NAME,
-    value: buildToken(username, secret),
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: SESSION_TTL_MS / 1000,
-  });
-  return true;
-}
-
-export async function clearAdminSession() {
-  const cookieStore = await cookies();
-  cookieStore.set({
-    name: ADMIN_COOKIE_NAME,
-    value: "",
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
 }
 
 export function getSafeAdminNextPath(input: FormDataEntryValue | null) {
