@@ -7,51 +7,51 @@ export const INDUSTRIES_SERVED: IndustryItem[] = [
   {
     title: "Telecommunications and ISPs",
     description:
-      "Rollout readiness, service reliability support, and operational delivery coordination for connectivity environments.",
+      "Operational support for connectivity services, including rollout readiness, customer equipment setup support, and service stability follow-through. Practical incident coordination and delivery traceability to keep teams aligned.",
   },
   {
     title: "Financial services (non-advice)",
     description:
-      "Operational and cybersecurity support for regulated environments, without providing financial advice.",
+      "Security and operational support for regulated environments, focusing on controlled delivery, access/process discipline, and dependable service continuity. No financial advice or client fund activity.",
   },
   {
     title: "Retail and eCommerce",
     description:
-      "Practical delivery support to improve customer response, service consistency, and day-to-day operational flow.",
+      "Support for reliable day-to-day operations, customer-facing uptime, and straightforward process improvements across teams. Practical security hygiene and escalation support where authorised.",
   },
   {
     title: "Public sector and regulated entities",
     description:
-      "Controlled delivery with audit-friendly documentation, risk management, and change governance.",
+      "Delivery support with clear documentation, change control and audit-friendly traceability. Operational continuity and risk-aware execution across stakeholders and suppliers.",
   },
   {
     title: "SMEs",
     description:
-      "Right-sized support for practical delivery, process improvement, and clear operational accountability.",
+      "Hands-on support to stabilise operations, improve delivery flow, and implement simple digital enablement without overcomplicating it. Clear documentation and pragmatic security guidance where authorised.",
   },
   {
     title: "Hospitality",
     description:
-      "Catering operations support focused on food safety, service standards, and reliable event execution.",
+      "Kitchen and catering operations support with service standards, food safety discipline, and event execution assistance. Stock handling support and team coordination to keep service consistent.",
   },
   {
     title: "Professional services",
     description:
-      "Delivery support to strengthen workflow discipline, client service consistency, and operational quality.",
+      "Delivery and operational support that improves responsiveness, documentation, and client follow-through. Practical security and continuity support for internal operations where authorised.",
   },
   {
     title: "Technology and SaaS",
     description:
-      "Practical delivery support, process improvement, and digital enablement for product and service teams.",
+      "Support for structured delivery, operational readiness, and clear handover practices that reduce rework. Security review support and remediation coordination where authorised.",
   },
   {
     title: "Logistics",
     description:
-      "Operational coordination and process support to improve reliability, communication, and service continuity.",
+      "Support for dependable operational processes, issue follow-through, and supplier coordination. Practical continuity support and documentation so disruptions are managed consistently.",
   },
   {
     title: "Education",
     description:
-      "Support for secure operations, administrative continuity, and dependable stakeholder communication.",
+      "Support for stable operations and dependable communication across staff and stakeholders, with practical ICT continuity support. Authorised security checks and basic hardening coordination for admin environments where required.",
   },
 ];
