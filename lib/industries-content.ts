@@ -5,53 +5,53 @@ export type IndustryItem = {
 
 export const INDUSTRIES_SERVED: IndustryItem[] = [
   {
-    title: "Telecommunications",
+    title: "Telecommunications and ISPs",
     description:
-      "Support for service continuity, supplier coordination, and practical rollout execution across network-dependent operations.",
+      "Rollout readiness, service reliability support, and operational delivery coordination for connectivity environments.",
   },
   {
     title: "Financial services (non-advice)",
     description:
-      "Operational, cybersecurity, and delivery support for regulated environments without providing financial advice.",
+      "Operational and cybersecurity support for regulated environments, without providing financial advice.",
   },
   {
     title: "Retail and eCommerce",
     description:
-      "Process and systems support to improve customer responsiveness, service reliability, and day-to-day business flow.",
+      "Practical delivery support to improve customer response, service consistency, and day-to-day operational flow.",
   },
   {
-    title: "Public sector",
+    title: "Public sector and regulated entities",
     description:
-      "Structured delivery support aligned to governance requirements, stakeholder accountability, and continuity priorities.",
+      "Controlled delivery with audit-friendly documentation, risk management, and change governance.",
   },
   {
     title: "SMEs",
     description:
-      "Right-sized advisory and implementation support focused on practical outcomes, risk reduction, and operational clarity.",
+      "Right-sized support for practical delivery, process improvement, and clear operational accountability.",
   },
   {
     title: "Hospitality",
     description:
-      "Operational and service-delivery support to maintain consistency across events, guest experience, and internal processes.",
+      "Catering operations support focused on food safety, service standards, and reliable event execution.",
   },
   {
     title: "Professional services",
     description:
-      "Support for workflow discipline, client-service consistency, and secure handling of business information.",
+      "Delivery support to strengthen workflow discipline, client service consistency, and operational quality.",
   },
   {
     title: "Technology and SaaS",
     description:
-      "Delivery and operational support for teams managing product execution, customer commitments, and service stability.",
+      "Practical delivery support, process improvement, and digital enablement for product and service teams.",
   },
   {
     title: "Logistics",
     description:
-      "Coordination and process support to improve service reliability, communication flow, and operational resilience.",
+      "Operational coordination and process support to improve reliability, communication, and service continuity.",
   },
   {
     title: "Education",
     description:
-      "Practical support for secure systems use, administrative continuity, and dependable stakeholder communication.",
+      "Support for secure operations, administrative continuity, and dependable stakeholder communication.",
   },
 ];

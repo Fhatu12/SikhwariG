@@ -23,8 +23,8 @@ export default async function Home() {
 
   return (
     <>
-      <section className="border-b border-slate-200 bg-gradient-to-b from-[var(--color-brand-50)] to-white py-16 sm:py-20">
-        <Container className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+      <section className="border-b border-slate-200 bg-gradient-to-b from-[var(--color-brand-50)] to-white py-12 sm:py-14">
+        <Container className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-start">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--color-brand-700)]">
               SIKHWARI GROUP (Pty) Ltd
@@ -83,6 +83,14 @@ export default async function Home() {
             </article>
           ))}
         </div>
+        <div className="mt-4 text-right">
+          <Link
+            className="text-sm font-medium text-[var(--color-brand-700)] hover:underline"
+            href="/services"
+          >
+            View all services
+          </Link>
+        </div>
       </Section>
 
       <ProofSection items={proofItems} />
@@ -91,6 +99,8 @@ export default async function Home() {
         title="Industries served"
         intro="We support organisations across a focused range of sectors with practical delivery and accountable execution. View the full industries profile for more detail."
         items={compactIndustries}
+        moreHref="/industries"
+        moreLabel="View all industries"
       />
     </>
   );
