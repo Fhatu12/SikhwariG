@@ -46,6 +46,99 @@ It summarizes where key content lives, what guardrails apply, and how to generat
    - `docs/screenshots/desktop/*.png`
    - `docs/screenshots/mobile/*.png`
 
+## Screenshots
+
+The following images are generated from `docs/screenshots/...` and are embedded in the PDF export.
+
+### Home
+
+<figure>
+  <img src="./screenshots/desktop/home.png" alt="Home page desktop screenshot" />
+  <figcaption>Home page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/mobile/home.png" alt="Home page mobile screenshot" />
+  <figcaption>Home page (Mobile, 390x844).</figcaption>
+</figure>
+
+### About
+
+<figure>
+  <img src="./screenshots/desktop/about.png" alt="About page desktop screenshot" />
+  <figcaption>About page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/mobile/about.png" alt="About page mobile screenshot" />
+  <figcaption>About page (Mobile, 390x844).</figcaption>
+</figure>
+
+### Services
+
+<figure>
+  <img src="./screenshots/desktop/services.png" alt="Services page desktop screenshot" />
+  <figcaption>Services page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/mobile/services.png" alt="Services page mobile screenshot" />
+  <figcaption>Services page (Mobile, 390x844).</figcaption>
+</figure>
+
+### Contact
+
+<figure>
+  <img src="./screenshots/desktop/contact.png" alt="Contact page desktop screenshot" />
+  <figcaption>Contact page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/mobile/contact.png" alt="Contact page mobile screenshot" />
+  <figcaption>Contact page (Mobile, 390x844).</figcaption>
+</figure>
+
+### Legal
+
+<figure>
+  <img
+    src="./screenshots/desktop/legal-privacy.png"
+    alt="Legal privacy page desktop screenshot"
+  />
+  <figcaption>Legal - Privacy page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/mobile/legal-privacy.png" alt="Legal privacy page mobile screenshot" />
+  <figcaption>Legal - Privacy page (Mobile, 390x844).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/desktop/legal-terms.png" alt="Legal terms page desktop screenshot" />
+  <figcaption>Legal - Terms page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img src="./screenshots/mobile/legal-terms.png" alt="Legal terms page mobile screenshot" />
+  <figcaption>Legal - Terms page (Mobile, 390x844).</figcaption>
+</figure>
+
+<figure>
+  <img
+    src="./screenshots/desktop/legal-disclaimer.png"
+    alt="Legal disclaimer page desktop screenshot"
+  />
+  <figcaption>Legal - Disclaimer page (Desktop, 1280x720).</figcaption>
+</figure>
+
+<figure>
+  <img
+    src="./screenshots/mobile/legal-disclaimer.png"
+    alt="Legal disclaimer page mobile screenshot"
+  />
+  <figcaption>Legal - Disclaimer page (Mobile, 390x844).</figcaption>
+</figure>
+
 ## Deployment notes
 
 - Placeholder: document production deployment targets, environment variables, and release checklist here.

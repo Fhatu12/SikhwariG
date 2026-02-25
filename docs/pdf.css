@@ -1,0 +1,81 @@
+@page {
+  size: A4;
+  margin: 18mm 16mm 18mm 16mm;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: #0f172a;
+}
+
+h1,
+h2,
+h3 {
+  color: #0f172a;
+  line-height: 1.25;
+  margin-top: 1.2em;
+}
+
+h1 {
+  font-size: 22pt;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+h2 {
+  font-size: 15pt;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 4px;
+}
+
+h3 {
+  font-size: 12pt;
+}
+
+p,
+li {
+  color: #1e293b;
+}
+
+code {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 10pt;
+}
+
+pre {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px;
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+figure {
+  margin: 12px 0 16px;
+  page-break-inside: avoid;
+}
+
+img {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+figcaption {
+  margin-top: 6px;
+  font-size: 9.5pt;
+  color: #475569;
+  text-align: center;
+}
