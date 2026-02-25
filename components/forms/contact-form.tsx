@@ -328,7 +328,7 @@ export function ContactForm({ initialIntent }: ContactFormProps) {
         <textarea
           aria-describedby={touched.message && errors.message ? messageErrorId : undefined}
           aria-invalid={touched.message && errors.message ? "true" : undefined}
-          className="min-h-32 w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          className="min-h-32 w-full resize-none rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
           id="contact-message"
           name="message"
           maxLength={2000}
@@ -339,6 +339,7 @@ export function ContactForm({ initialIntent }: ContactFormProps) {
             setValues((current) => ({ ...current, message: event.target.value }));
           }}
         />
+        <p className="mt-1 text-right text-xs text-slate-500">{values.message.length} / 2000</p>
         {touched.message && errors.message ? (
           <p className="mt-1 text-xs text-red-600" id={messageErrorId}>
             {errors.message}
