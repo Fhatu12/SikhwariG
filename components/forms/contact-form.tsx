@@ -8,7 +8,6 @@ const SERVICE_AREA_OPTIONS = [
   "Not sure",
   "Telecommunications, ICT, and Network Services",
   "Cybersecurity Services",
-  "Proprietary Trading and Market Activities (Internal Capital Allocation)",
   "Culinary and Hospitality Services",
   "Software Development and Digital Services",
 ] as const;

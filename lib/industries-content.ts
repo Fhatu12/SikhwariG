@@ -10,11 +10,6 @@ export const INDUSTRIES_SERVED: IndustryItem[] = [
       "Operational support for connectivity services, including rollout readiness, customer equipment setup support, and service stability follow-through. Practical incident coordination and delivery traceability to keep teams aligned.",
   },
   {
-    title: "Financial services (non-advice)",
-    description:
-      "Security and operational support for regulated environments, focusing on controlled delivery, access/process discipline, and dependable service continuity. No financial advice or client fund activity.",
-  },
-  {
     title: "Retail and eCommerce",
     description:
       "Support for reliable day-to-day operations, customer-facing uptime, and straightforward process improvements across teams. Practical security hygiene and escalation support where authorised.",

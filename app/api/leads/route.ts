@@ -13,6 +13,12 @@ const MAX_USER_AGENT_LENGTH = 512;
 const MAX_IP_LENGTH = 64;
 const MIN_FORM_SUBMIT_TIME_MS = 3000;
 const ALLOWED_INTENTS = new Set(["Request a quote", "Book consultation", "General enquiry"]);
+const ALLOWED_SERVICE_AREAS = new Set([
+  "Telecommunications, ICT, and Network Services",
+  "Cybersecurity Services",
+  "Culinary and Hospitality Services",
+  "Software Development and Digital Services",
+]);
 
 type LeadPayload = {
   name?: unknown;
@@ -119,6 +125,10 @@ export async function POST(request: Request) {
       { error: "Service area must be 80 characters or fewer." },
       { status: 400 }
     );
+  }
+
+  if (serviceArea && !ALLOWED_SERVICE_AREAS.has(serviceArea)) {
+    return NextResponse.json({ error: "Please select a valid service area." }, { status: 400 });
   }
 
   if (!message || message.length > MAX_MESSAGE_LENGTH) {
