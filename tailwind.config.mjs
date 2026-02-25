@@ -10,6 +10,10 @@ const config = {
           600: "var(--color-brand-600)",
           700: "var(--color-brand-700)",
         },
+        accent: {
+          50: "var(--color-accent-50)",
+          600: "var(--color-accent-600)",
+        },
         surface: "var(--color-surface)",
         "surface-muted": "var(--color-surface-muted)",
         text: "var(--color-text)",

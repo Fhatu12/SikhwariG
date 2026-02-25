@@ -29,7 +29,10 @@ export function IndustriesSection({
       </div>
       {moreHref && moreLabel ? (
         <div className="mt-4 text-right">
-          <Link className="text-link focus-ring text-sm font-medium" href={moreHref}>
+          <Link
+            className="text-link text-link-subtle focus-ring text-sm font-medium"
+            href={moreHref}
+          >
             {moreLabel}
           </Link>
         </div>

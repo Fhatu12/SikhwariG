@@ -84,7 +84,10 @@ export default async function Home() {
           ))}
         </div>
         <div className="mt-4 text-right">
-          <Link className="text-link focus-ring text-sm font-medium" href="/services">
+          <Link
+            className="text-link text-link-subtle focus-ring text-sm font-medium"
+            href="/services"
+          >
             View all services
           </Link>
         </div>

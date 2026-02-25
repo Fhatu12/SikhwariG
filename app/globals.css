@@ -41,6 +41,15 @@ a:not([class]) {
   text-decoration: underline;
 }
 
+.text-link-subtle {
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+}
+
+.text-link-subtle:hover {
+  background: var(--color-accent-50);
+}
+
 .focus-ring {
   border-radius: 0.375rem;
 }
