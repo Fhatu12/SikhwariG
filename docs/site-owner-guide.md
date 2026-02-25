@@ -33,6 +33,8 @@ It summarizes where key content lives, what guardrails apply, and how to generat
 
 - Baseline HTTP security headers are configured globally in `next.config.ts` and apply to all routes, including `/admin` and `/api`.
 - Admin session cookies are hardened with `httpOnly`, `sameSite=lax`, `path=/`, and `secure` in production.
+- Admin routes under `app/admin/(protected)` are server-protected and redirect to `/admin/login` before rendering when unauthenticated.
+- Admin pages and `/api/admin/*` responses are marked non-cacheable (`Cache-Control: no-store`) to avoid storing sensitive admin data.
 
 ## Abuse controls
 

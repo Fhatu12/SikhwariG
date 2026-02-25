@@ -13,6 +13,11 @@ const CONTENT_SECURITY_POLICY = [
   "connect-src 'self'",
 ].join("; ");
 
+const ADMIN_NO_STORE_HEADER = {
+  key: "Cache-Control",
+  value: "no-store, no-cache, must-revalidate",
+};
+
 const nextConfig: NextConfig = {
   reactCompiler: true,
   async headers() {
@@ -48,6 +53,14 @@ const nextConfig: NextConfig = {
     }
 
     return [
+      {
+        source: "/admin/:path*",
+        headers: [...headers, ADMIN_NO_STORE_HEADER],
+      },
+      {
+        source: "/api/admin/:path*",
+        headers: [...headers, ADMIN_NO_STORE_HEADER],
+      },
       {
         source: "/:path*",
         headers,
