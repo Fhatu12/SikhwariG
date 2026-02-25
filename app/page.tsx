@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { IndustriesSection } from "@/components/industries/industries-section";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { ProofSection } from "@/components/proof/proof-section";
+import { INDUSTRIES_SERVED } from "@/lib/industries-content";
 import { getActiveProofItems } from "@/lib/proof-content";
 import { buildMetadata } from "@/lib/seo";
 
@@ -16,6 +18,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const proofItems = await getActiveProofItems();
+  const compactIndustries = INDUSTRIES_SERVED.slice(0, 6);
 
   return (
     <>
@@ -81,6 +84,12 @@ export default async function Home() {
       </Section>
 
       <ProofSection items={proofItems} />
+
+      <IndustriesSection
+        title="Industries served"
+        intro="We support organisations across a focused range of sectors with practical delivery and accountable execution. View the full industries profile for more detail."
+        items={compactIndustries}
+      />
     </>
   );
 }
