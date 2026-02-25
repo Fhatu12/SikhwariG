@@ -35,6 +35,8 @@ It summarizes where key content lives, what guardrails apply, and how to generat
 - Admin session cookies are hardened with `httpOnly`, `sameSite=lax`, `path=/`, and `secure` in production.
 - Admin routes under `app/admin/(protected)` are server-protected and redirect to `/admin/login` before rendering when unauthenticated.
 - Admin pages and `/api/admin/*` responses are marked non-cacheable (`Cache-Control: no-store`) to avoid storing sensitive admin data.
+- Legal identity values (registration number and registered address) are environment-configured and no longer hard-coded in components.
+- Proof items (certifications, partners, memberships, awards) are managed via `/admin/proof` and displayed on Home and About when active.
 
 ## Abuse controls
 

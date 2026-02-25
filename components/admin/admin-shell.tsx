@@ -5,6 +5,7 @@ const ADMIN_NAV_ITEMS = [
   { href: "/admin/leads", label: "Leads" },
   { href: "/admin/services", label: "Services" },
   { href: "/admin/posts", label: "Posts" },
+  { href: "/admin/proof", label: "Proof" },
 ];
 
 type AdminShellProps = {

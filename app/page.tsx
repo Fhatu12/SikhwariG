@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { ProofSection } from "@/components/proof/proof-section";
+import { getActiveProofItems } from "@/lib/proof-content";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -10,7 +12,11 @@ export const metadata = buildMetadata({
   path: "/",
 });
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const proofItems = await getActiveProofItems();
+
   return (
     <>
       <section className="border-b border-slate-200 bg-gradient-to-b from-[var(--color-brand-50)] to-white py-16 sm:py-20">
@@ -73,6 +79,8 @@ export default function Home() {
           ))}
         </div>
       </Section>
+
+      <ProofSection items={proofItems} />
     </>
   );
 }

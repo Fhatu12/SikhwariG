@@ -1,4 +1,6 @@
+import { ProofSection } from "@/components/proof/proof-section";
 import { Section } from "@/components/layout/section";
+import { getActiveProofItems } from "@/lib/proof-content";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -8,7 +10,11 @@ export const metadata = buildMetadata({
   path: "/about",
 });
 
-export default function AboutPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AboutPage() {
+  const proofItems = await getActiveProofItems();
+
   return (
     <>
       <Section
@@ -26,6 +32,12 @@ export default function AboutPage() {
           </p>
         </div>
       </Section>
+
+      <ProofSection
+        items={proofItems}
+        title="Proof and governance"
+        description="Current proof items reflecting recognised certifications, partner relationships, memberships, and awards."
+      />
     </>
   );
 }

@@ -1,3 +1,10 @@
+import {
+  divisionStatement,
+  legalName,
+  registeredAddress,
+  registrationNumber,
+} from "@/lib/legal-identity";
+
 type LegalIdentityBlockProps = {
   className?: string;
 };
@@ -12,13 +19,11 @@ export function LegalIdentityBlock({ className = "" }: LegalIdentityBlockProps) 
         Legal identity
       </h3>
       <ul className="mt-3 space-y-2">
-        <li>Full legal name: SIKHWARI GROUP (Pty) Ltd</li>
-        <li>Registration No: [to be issued]</li>
-        <li>Registered address: [to be confirmed]</li>
+        <li>Full legal name: {legalName}</li>
+        <li>Registration No: {registrationNumber}</li>
+        <li>Registered address: {registeredAddress}</li>
       </ul>
-      <p className="mt-3">
-        All service lines are divisions of a single legal entity (not separate companies).
-      </p>
+      <p className="mt-3">{divisionStatement}</p>
     </section>
   );
 }
