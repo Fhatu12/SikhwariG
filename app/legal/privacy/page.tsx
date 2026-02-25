@@ -20,13 +20,13 @@ export default function PrivacyPage() {
             purposes.
           </p>
           <p>
-            We process this information to respond to enquiries, assess consultation fit, maintain
-            communication records, and protect the website from abuse.
+            We process this information to respond to enquiries, assess whether a consultation is
+            appropriate, maintain communication records, and protect the website from abuse.
           </p>
           <p>
-            Lead and enquiry records will be stored in a database managed through Prisma as part of
-            the website application stack. Slice 1 includes policy wording only; database wiring
-            will be implemented in Slice 2.
+            Enquiry records are stored as part of the website contact process. In this phase, this
+            page sets out the policy wording, and additional back-end integration is planned for a
+            later phase.
           </p>
           <p>
             Default retention period: 24 months from last meaningful contact, configurable as
@@ -38,9 +38,9 @@ export default function PrivacyPage() {
             contact page and will be handled by the company representative.
           </p>
           <p>
-            We apply high-level safeguards including controlled access, encrypted transport (HTTPS),
-            and role-appropriate handling procedures. Specific technical controls are not disclosed
-            publicly for security reasons.
+            We apply appropriate safeguards including controlled access, encrypted transport
+            (HTTPS), and role-appropriate handling procedures. Specific technical controls are not
+            disclosed publicly for security reasons.
           </p>
         </div>
         <LegalIdentityBlock />

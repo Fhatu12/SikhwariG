@@ -14,7 +14,7 @@ export default function ContactPage() {
     <>
       <Section
         title="Contact"
-        description="Use this channel for business enquiries and consultation requests. Trading solicitations are not accepted."
+        description="Use this page for business enquiries and consultation requests. Trading solicitations are not accepted."
       >
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <ContactForm />

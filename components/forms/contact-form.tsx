@@ -74,8 +74,8 @@ export function ContactForm() {
       noValidate
     >
       <p className="text-sm text-slate-600">
-        Use this form for contact and consultation requests only. This channel does not accept
-        trading solicitations.
+        Use this form for business enquiries and consultation requests only. Trading solicitations
+        are not accepted.
       </p>
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Full name *</span>
@@ -98,7 +98,7 @@ export function ContactForm() {
       </label>
 
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">Email *</span>
+        <span className="mb-1 block text-sm font-medium text-slate-700">Email address *</span>
         <input
           className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
           name="email"
@@ -164,7 +164,7 @@ export function ContactForm() {
 
       {submitted ? (
         <p className="rounded-[var(--radius-sm)] bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-          Thank you. Your consultation booking request has been received and our team will follow up
+          Thank you. Your consultation request has been received and our team will follow up
           shortly.
         </p>
       ) : null}

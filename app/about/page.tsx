@@ -18,11 +18,11 @@ export default function AboutPage() {
         <div className="max-w-3xl space-y-4 text-slate-700">
           <p>
             We focus on disciplined delivery and clear governance. Our model is designed to keep
-            engagements practical, transparent, and outcome-driven.
+            engagements practical, transparent and results-focused.
           </p>
           <p>
-            Slice 1 establishes the company-facing foundation. Sector and capability depth will be
-            expanded as service collateral is finalized.
+            Phase 1 establishes the company-facing foundation. Sector and capability depth will be
+            expanded as service collateral is finalised.
           </p>
         </div>
       </Section>

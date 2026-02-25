@@ -18,7 +18,7 @@ export default function TermsPage() {
             notice and does not constitute a contractual offer.
           </p>
           <p>
-            Users agree not to misuse the site, attempt unauthorized access, or interfere with
+            Users agree not to misuse the site, attempt unauthorised access, or interfere with
             service availability.
           </p>
           <p>

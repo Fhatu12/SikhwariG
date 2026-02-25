@@ -15,7 +15,7 @@ export default function DisclaimerPage() {
       <div className="space-y-6">
         <div className="space-y-3 text-sm leading-7 text-slate-700">
           <p>
-            Information on this website is supplied for general business context and does not
+            Information on this website is provided for general business information and does not
             constitute legal, financial, tax, or investment advice.
           </p>
           <p>

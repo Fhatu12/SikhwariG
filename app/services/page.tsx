@@ -24,15 +24,15 @@ export default function ServicesPage() {
             <li>Connectivity planning and rollout support for business operations.</li>
             <li>Infrastructure coordination across sites, teams, and service providers.</li>
             <li>Service continuity support for communication and network environments.</li>
-            <li>Vendor and contract alignment for practical delivery outcomes.</li>
+            <li>Supplier and contract alignment for practical delivery outcomes.</li>
           </ul>
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-white p-5">
           <h3 className="text-lg font-semibold text-slate-900">Cybersecurity Services</h3>
           <p className="mt-2 text-sm text-slate-600">
-            Scope disclaimer: services are advisory, assessment, and support in nature, subject to
-            applicable law and client authorization where required.
+            Scope note: services are advisory, assessment and support in nature, subject to
+            applicable law and client authorisation where required.
           </p>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
             <li>Baseline risk reviews and practical control recommendations.</li>
@@ -48,7 +48,8 @@ export default function ServicesPage() {
             Allocation)
           </h3>
           <p className="mt-2 text-sm font-medium text-slate-700">
-            Not offered as a public service.
+            Internal function only. Not offered to the public, and not a solicitation or invitation
+            to trade.
           </p>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
             <li>Internal market research to inform treasury decisions.</li>
