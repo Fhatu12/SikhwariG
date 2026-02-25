@@ -169,8 +169,7 @@ export function ContactForm({ initialIntent }: ContactFormProps) {
       noValidate
     >
       <p className="text-sm text-slate-600">
-        Use this form for business enquiries and consultation requests only. Trading solicitations
-        are not accepted.
+        Use this form for business enquiries and consultation requests only.
       </p>
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Full name *</span>

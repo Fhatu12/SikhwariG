@@ -12,7 +12,7 @@ type LegalIdentityBlockProps = {
 export function LegalIdentityBlock({ className = "" }: LegalIdentityBlockProps) {
   return (
     <section
-      className={`rounded-xl border border-slate-200 bg-[var(--color-surface-muted)] p-4 text-sm text-slate-700 ${className}`}
+      className={`rounded-xl border border-slate-200 bg-[var(--color-surface-muted)] p-4 text-sm text-slate-800 ${className}`}
       aria-label="Legal company identity"
     >
       <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-900">

@@ -19,13 +19,6 @@ export default function IndustriesPage() {
         intro="We support organisations across multiple sectors with practical delivery, governance discipline, and accountable execution aligned to business priorities."
         items={INDUSTRIES_SERVED}
       />
-      <Section title="Client confidentiality">
-        <p className="max-w-3xl text-sm leading-7 text-slate-600">
-          We treat client information as confidential and only reference client names or work
-          examples with permission. Additional details can be shared during a private discussion
-          where appropriate.
-        </p>
-      </Section>
       <Section
         title="Discuss your requirements"
         description="Use our contact channel for business enquiries, consultations, and quote requests."

@@ -22,7 +22,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
     <>
       <Section
         title="Contact"
-        description="Use this page for business enquiries and consultation requests. Trading solicitations are not accepted."
+        description="Use this page for business enquiries and consultation requests."
       >
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <ContactForm initialIntent={initialIntent} />
