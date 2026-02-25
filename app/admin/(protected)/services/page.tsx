@@ -19,8 +19,8 @@ export default async function AdminServicesPage({ searchParams }: ServicesPagePr
       <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide">Copy guardrail</h2>
         <p className="mt-2">
-          Treasury and proprietary trading text must stay internal-only. Do not add public trading
-          calls to action, invitation language, or solicitation copy.
+          Treasury / Internal proprietary trading text must stay internal-only. Do not add public
+          trading calls to action, invitation language, or solicitation copy.
         </p>
       </section>
 
@@ -79,7 +79,7 @@ export default async function AdminServicesPage({ searchParams }: ServicesPagePr
 
               {service.isTradingInternal ? (
                 <p className="rounded-[var(--radius-sm)] bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                  Trading intro text is fixed for MOI compliance.
+                  Treasury / Internal trading intro text is fixed for MOI compliance.
                 </p>
               ) : null}
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { IndustriesSection } from "@/components/industries/industries-section";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { TradingDisclaimerBlock } from "@/components/legal/trading-disclaimer-block";
 import { ProofSection } from "@/components/proof/proof-section";
 import { INDUSTRIES_SERVED } from "@/lib/industries-content";
 import { getActiveProofItems } from "@/lib/proof-content";
@@ -45,9 +46,10 @@ export default async function Home() {
               disclosures and contact enquiries.
             </p>
             <p className="mt-2 text-sm text-slate-600">
-              Treasury and proprietary trading activities are internal and are not offered to the
-              public.
+              Treasury / Internal proprietary trading activities are internal and are not offered to
+              the public.
             </p>
+            <TradingDisclaimerBlock className="mt-3" />
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 className="rounded-[var(--radius-sm)] bg-[var(--color-brand-700)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-600)]"
