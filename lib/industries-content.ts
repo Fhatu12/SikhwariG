@@ -42,7 +42,7 @@ export const INDUSTRIES_SERVED: IndustryItem[] = [
   {
     title: "Technology and SaaS",
     description:
-      "Support for structured delivery, operational readiness, and clear handover practices that reduce rework. Security review support and remediation coordination where authorised.",
+      "Support for structured delivery, operational readiness, and clear handover practices that reduce rework. Web and software development support, plus security review and remediation coordination where authorised.",
   },
   {
     title: "Logistics",
