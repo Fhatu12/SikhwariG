@@ -1,0 +1,15 @@
+:root {
+  --color-brand-50: #eef8f8;
+  --color-brand-100: #d7efee;
+  --color-brand-600: #0f766e;
+  --color-brand-700: #115e59;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-border: #dbe4ea;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
