@@ -7,15 +7,19 @@ const MAX_NAME_LENGTH = 80;
 const MAX_EMAIL_LENGTH = 120;
 const MAX_PHONE_LENGTH = 30;
 const MAX_MESSAGE_LENGTH = 2000;
+const MAX_SERVICE_AREA_LENGTH = 80;
 const MAX_SOURCE_PATH_LENGTH = 200;
 const MAX_USER_AGENT_LENGTH = 512;
 const MAX_IP_LENGTH = 64;
 const MIN_FORM_SUBMIT_TIME_MS = 3000;
+const ALLOWED_INTENTS = new Set(["Request a quote", "Book consultation", "General enquiry"]);
 
 type LeadPayload = {
   name?: unknown;
   email?: unknown;
   phone?: unknown;
+  intent?: unknown;
+  serviceArea?: unknown;
   message?: unknown;
   companyWebsite?: unknown;
   website?: unknown;
@@ -57,6 +61,8 @@ export async function POST(request: Request) {
   const name = asTrimmedString(payload.name);
   const email = asTrimmedString(payload.email);
   const phone = asTrimmedString(payload.phone);
+  const intent = asTrimmedString(payload.intent);
+  const serviceArea = asTrimmedString(payload.serviceArea);
   const message = asTrimmedString(payload.message);
   const honeypot = asTrimmedString(payload.companyWebsite ?? payload.website);
   const formStartedAtRaw = Number(payload.formStartedAt);
@@ -104,6 +110,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please provide a valid phone number." }, { status: 400 });
   }
 
+  if (!ALLOWED_INTENTS.has(intent)) {
+    return NextResponse.json({ error: "Please select a valid reason." }, { status: 400 });
+  }
+
+  if (serviceArea.length > MAX_SERVICE_AREA_LENGTH) {
+    return NextResponse.json(
+      { error: "Service area must be 80 characters or fewer." },
+      { status: 400 }
+    );
+  }
+
   if (!message || message.length > MAX_MESSAGE_LENGTH) {
     return NextResponse.json(
       { error: "Message must be 2000 characters or fewer." },
@@ -124,6 +141,8 @@ export async function POST(request: Request) {
       name,
       email,
       phone: phone || null,
+      intent,
+      serviceArea: serviceArea || null,
       message,
       ipAddress: ipAddress || null,
       userAgent: userAgent || null,

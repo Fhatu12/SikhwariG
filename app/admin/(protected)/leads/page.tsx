@@ -55,6 +55,7 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
                     <div>
                       <p className="font-medium text-slate-900">{lead.name}</p>
                       <p className="text-sm text-slate-600">{lead.email}</p>
+                      <p className="text-xs text-slate-500">{lead.intent}</p>
                       <p className="text-xs text-slate-500">{formatDate(lead.createdAt)}</p>
                     </div>
                     <Link
@@ -89,6 +90,14 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
               <div>
                 <dt className="font-medium text-slate-700">Phone</dt>
                 <dd className="text-slate-900">{selectedLead.phone || "Not provided"}</dd>
+              </div>
+              <div>
+                <dt className="font-medium text-slate-700">Reason</dt>
+                <dd className="text-slate-900">{selectedLead.intent}</dd>
+              </div>
+              <div>
+                <dt className="font-medium text-slate-700">Service area</dt>
+                <dd className="text-slate-900">{selectedLead.serviceArea || "Not provided"}</dd>
               </div>
               <div>
                 <dt className="font-medium text-slate-700">Submitted</dt>

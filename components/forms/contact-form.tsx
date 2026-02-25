@@ -2,21 +2,52 @@
 
 import { FormEvent, useMemo, useState } from "react";
 
+const INTENT_OPTIONS = ["Request a quote", "Book consultation", "General enquiry"] as const;
+
+const SERVICE_AREA_OPTIONS = [
+  "Not sure",
+  "Telecommunications, ICT, and Network Services",
+  "Cybersecurity Services",
+  "Proprietary Trading and Market Activities (Internal Capital Allocation)",
+  "Culinary and Hospitality Services",
+  "Software Development and Digital Services",
+] as const;
+
+type ContactIntent = (typeof INTENT_OPTIONS)[number];
+
 type ContactValues = {
   fullName: string;
   email: string;
   phone: string;
+  intent: ContactIntent;
+  serviceArea: string;
   message: string;
   companyWebsite: string;
 };
 
-const INITIAL_VALUES: ContactValues = {
-  fullName: "",
-  email: "",
-  phone: "",
-  message: "",
-  companyWebsite: "",
+type ContactFormProps = {
+  initialIntent: ContactIntent;
 };
+
+function createInitialValues(initialIntent: ContactIntent): ContactValues {
+  return {
+    fullName: "",
+    email: "",
+    phone: "",
+    intent: initialIntent,
+    serviceArea: "Not sure",
+    message: "",
+    companyWebsite: "",
+  };
+}
+
+function toIntent(value: string): ContactIntent {
+  if (INTENT_OPTIONS.includes(value as ContactIntent)) {
+    return value as ContactIntent;
+  }
+
+  return "General enquiry";
+}
 
 function validate(values: ContactValues) {
   const errors: Partial<Record<keyof ContactValues, string>> = {};
@@ -43,6 +74,14 @@ function validate(values: ContactValues) {
     }
   }
 
+  if (!INTENT_OPTIONS.includes(values.intent)) {
+    errors.intent = "Please select a reason.";
+  }
+
+  if (values.serviceArea.trim().length > 80) {
+    errors.serviceArea = "Service area must be 80 characters or fewer.";
+  }
+
   if (!values.message.trim()) {
     errors.message = "Please add a short message.";
   } else if (values.message.length > 2000) {
@@ -52,8 +91,8 @@ function validate(values: ContactValues) {
   return errors;
 }
 
-export function ContactForm() {
-  const [values, setValues] = useState<ContactValues>(INITIAL_VALUES);
+export function ContactForm({ initialIntent }: ContactFormProps) {
+  const [values, setValues] = useState<ContactValues>(() => createInitialValues(initialIntent));
   const [formStartedAt] = useState(() => Date.now());
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -64,6 +103,8 @@ export function ContactForm() {
   const fullNameErrorId = "contact-fullName-error";
   const emailErrorId = "contact-email-error";
   const phoneErrorId = "contact-phone-error";
+  const intentErrorId = "contact-intent-error";
+  const serviceAreaErrorId = "contact-serviceArea-error";
   const messageErrorId = "contact-message-error";
   const statusMessageId = "contact-form-status";
 
@@ -75,6 +116,8 @@ export function ContactForm() {
       fullName: true,
       email: true,
       phone: true,
+      intent: true,
+      serviceArea: true,
       message: true,
       companyWebsite: true,
     });
@@ -95,6 +138,8 @@ export function ContactForm() {
           name: values.fullName,
           email: values.email,
           phone: values.phone,
+          intent: values.intent,
+          serviceArea: values.serviceArea === "Not sure" ? "" : values.serviceArea,
           message: values.message,
           companyWebsite: values.companyWebsite,
           formStartedAt,
@@ -110,7 +155,7 @@ export function ContactForm() {
       }
 
       setStatus("success");
-      setValues(INITIAL_VALUES);
+      setValues(createInitialValues(initialIntent));
       setTouched({});
     } catch {
       setStatus("error");
@@ -203,6 +248,66 @@ export function ContactForm() {
         ) : null}
       </label>
 
+      <label className="block">
+        <span className="mb-1 block text-sm font-medium text-slate-700">Reason *</span>
+        <select
+          aria-describedby={touched.intent && errors.intent ? intentErrorId : undefined}
+          aria-invalid={touched.intent && errors.intent ? "true" : undefined}
+          className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          id="contact-intent"
+          name="intent"
+          value={values.intent}
+          onBlur={() => setTouched((current) => ({ ...current, intent: true }))}
+          onChange={(event) => {
+            setStatus("idle");
+            setValues((current) => ({ ...current, intent: toIntent(event.target.value) }));
+          }}
+        >
+          {INTENT_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {touched.intent && errors.intent ? (
+          <p className="mt-1 text-xs text-red-600" id={intentErrorId}>
+            {errors.intent}
+          </p>
+        ) : null}
+      </label>
+
+      <label className="block">
+        <span className="mb-1 block text-sm font-medium text-slate-700">
+          Service area (optional)
+        </span>
+        <select
+          aria-describedby={
+            touched.serviceArea && errors.serviceArea ? serviceAreaErrorId : undefined
+          }
+          aria-invalid={touched.serviceArea && errors.serviceArea ? "true" : undefined}
+          className="w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
+          id="contact-serviceArea"
+          name="serviceArea"
+          value={values.serviceArea}
+          onBlur={() => setTouched((current) => ({ ...current, serviceArea: true }))}
+          onChange={(event) => {
+            setStatus("idle");
+            setValues((current) => ({ ...current, serviceArea: event.target.value }));
+          }}
+        >
+          {SERVICE_AREA_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {touched.serviceArea && errors.serviceArea ? (
+          <p className="mt-1 text-xs text-red-600" id={serviceAreaErrorId}>
+            {errors.serviceArea}
+          </p>
+        ) : null}
+      </label>
+
       <label className="hidden" aria-hidden="true">
         <span className="mb-1 block text-sm font-medium text-slate-700">Website</span>
         <input
@@ -246,7 +351,7 @@ export function ContactForm() {
         disabled={status === "submitting"}
         type="submit"
       >
-        {status === "submitting" ? "Submitting..." : "Book consultation"}
+        {status === "submitting" ? "Submitting…" : "Submit"}
       </button>
 
       {status === "success" ? (

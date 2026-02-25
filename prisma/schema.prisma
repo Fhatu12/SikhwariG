@@ -20,15 +20,17 @@ enum ProofKind {
 }
 
 model Lead {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String
-  phone     String?
-  message   String
-  createdAt DateTime @default(now())
-  ipAddress String?
-  userAgent String?
-  sourcePath String?
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String
+  phone       String?
+  intent      String   @default("General enquiry")
+  serviceArea String?
+  message     String
+  createdAt   DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+  sourcePath  String?
 }
 
 model ServiceContent {

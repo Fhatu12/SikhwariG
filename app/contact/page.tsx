@@ -9,7 +9,16 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
-export default function ContactPage() {
+type ContactPageProps = {
+  searchParams: Promise<{
+    intent?: string;
+  }>;
+};
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const params = await searchParams;
+  const initialIntent = params.intent === "quote" ? "Request a quote" : "General enquiry";
+
   return (
     <>
       <Section
@@ -17,7 +26,7 @@ export default function ContactPage() {
         description="Use this page for business enquiries and consultation requests. Trading solicitations are not accepted."
       >
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-          <ContactForm />
+          <ContactForm initialIntent={initialIntent} />
           <LegalIdentityBlock />
         </div>
       </Section>

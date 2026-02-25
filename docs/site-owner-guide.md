@@ -25,9 +25,9 @@ It summarizes where key content lives, what guardrails apply, and how to generat
 
 ## Contact form behavior
 
-- Current contact form is UI-only client validation and confirmation state.
-- No server-side storage or ticketing is wired yet.
-- Planned follow-on: persist submissions with Prisma-backed storage and submission handling.
+- Home `Request a quote` routes to `/contact?intent=quote`, which preselects the form reason as `Request a quote`.
+- Contact submissions are stored as leads in Prisma, including the selected `intent` and optional `serviceArea`.
+- Server-side validation, anti-spam checks, and rate limiting apply before a lead is stored.
 
 ## Admin and security baseline
 
