@@ -1,22 +1,25 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { checkLeadRateLimit } from "@/lib/rate-limit";
+import { checkLeadSubmissionRateLimit } from "@/lib/rate-limit";
 
 const MAX_NAME_LENGTH = 80;
 const MAX_EMAIL_LENGTH = 120;
 const MAX_PHONE_LENGTH = 30;
-const MAX_MESSAGE_LENGTH = 1200;
+const MAX_MESSAGE_LENGTH = 2000;
 const MAX_SOURCE_PATH_LENGTH = 200;
 const MAX_USER_AGENT_LENGTH = 512;
 const MAX_IP_LENGTH = 64;
+const MIN_FORM_SUBMIT_TIME_MS = 3000;
 
 type LeadPayload = {
   name?: unknown;
   email?: unknown;
   phone?: unknown;
   message?: unknown;
+  companyWebsite?: unknown;
   website?: unknown;
+  formStartedAt?: unknown;
   sourcePath?: unknown;
 };
 
@@ -55,10 +58,19 @@ export async function POST(request: Request) {
   const email = asTrimmedString(payload.email);
   const phone = asTrimmedString(payload.phone);
   const message = asTrimmedString(payload.message);
-  const honeypot = asTrimmedString(payload.website);
+  const honeypot = asTrimmedString(payload.companyWebsite ?? payload.website);
+  const formStartedAtRaw = Number(payload.formStartedAt);
   const sourcePath = asTrimmedString(payload.sourcePath);
 
   if (honeypot) {
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!Number.isFinite(formStartedAtRaw)) {
+    return NextResponse.json({ ok: true });
+  }
+
+  if (Date.now() - formStartedAtRaw < MIN_FORM_SUBMIT_TIME_MS) {
     return NextResponse.json({ ok: true });
   }
 
@@ -66,8 +78,7 @@ export async function POST(request: Request) {
   const ipAddress = getIpAddress(requestHeaders);
   const userAgent = (requestHeaders.get("user-agent") || "").slice(0, MAX_USER_AGENT_LENGTH);
 
-  const rateKey = ipAddress || userAgent || "unknown";
-  const rateResult = checkLeadRateLimit(rateKey);
+  const rateResult = checkLeadSubmissionRateLimit(ipAddress || "unknown");
   if (!rateResult.allowed) {
     return NextResponse.json(
       { error: "Too many requests. Please try again shortly." },
@@ -93,9 +104,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please provide a valid phone number." }, { status: 400 });
   }
 
-  if (!message || message.length < 10 || message.length > MAX_MESSAGE_LENGTH) {
+  if (!message || message.length > MAX_MESSAGE_LENGTH) {
     return NextResponse.json(
-      { error: "Message must be between 10 and 1200 characters." },
+      { error: "Message must be 2000 characters or fewer." },
       { status: 400 }
     );
   }

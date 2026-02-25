@@ -7,7 +7,7 @@ type ContactValues = {
   email: string;
   phone: string;
   message: string;
-  website: string;
+  companyWebsite: string;
 };
 
 const INITIAL_VALUES: ContactValues = {
@@ -15,7 +15,7 @@ const INITIAL_VALUES: ContactValues = {
   email: "",
   phone: "",
   message: "",
-  website: "",
+  companyWebsite: "",
 };
 
 function validate(values: ContactValues) {
@@ -45,10 +45,8 @@ function validate(values: ContactValues) {
 
   if (!values.message.trim()) {
     errors.message = "Please add a short message.";
-  } else if (values.message.length < 10) {
-    errors.message = "Message must be at least 10 characters.";
-  } else if (values.message.length > 1200) {
-    errors.message = "Message must be 1200 characters or fewer.";
+  } else if (values.message.length > 2000) {
+    errors.message = "Message must be 2000 characters or fewer.";
   }
 
   return errors;
@@ -56,6 +54,7 @@ function validate(values: ContactValues) {
 
 export function ContactForm() {
   const [values, setValues] = useState<ContactValues>(INITIAL_VALUES);
+  const [formStartedAt] = useState(() => Date.now());
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [submitError, setSubmitError] = useState("");
@@ -71,7 +70,7 @@ export function ContactForm() {
       email: true,
       phone: true,
       message: true,
-      website: true,
+      companyWebsite: true,
     });
 
     if (hasErrors) {
@@ -91,7 +90,8 @@ export function ContactForm() {
           email: values.email,
           phone: values.phone,
           message: values.message,
-          website: values.website,
+          companyWebsite: values.companyWebsite,
+          formStartedAt,
           sourcePath: window.location.pathname,
         }),
       });
@@ -186,22 +186,23 @@ export function ContactForm() {
         <span className="mb-1 block text-sm font-medium text-slate-700">Website</span>
         <input
           autoComplete="off"
-          name="website"
+          name="companyWebsite"
           tabIndex={-1}
           type="text"
-          value={values.website}
+          value={values.companyWebsite}
           onChange={(event) => {
-            setValues((current) => ({ ...current, website: event.target.value }));
+            setValues((current) => ({ ...current, companyWebsite: event.target.value }));
           }}
         />
       </label>
+      <input name="formStartedAt" type="hidden" value={String(formStartedAt)} />
 
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-slate-700">Message *</span>
         <textarea
           className="min-h-32 w-full rounded-[var(--radius-sm)] border border-slate-300 px-3 py-2 text-sm outline-none ring-[var(--color-brand-600)] transition focus:ring-2"
           name="message"
-          maxLength={1200}
+          maxLength={2000}
           value={values.message}
           onBlur={() => setTouched((current) => ({ ...current, message: true }))}
           onChange={(event) => {

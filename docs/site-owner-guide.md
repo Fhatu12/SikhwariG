@@ -34,6 +34,11 @@ It summarizes where key content lives, what guardrails apply, and how to generat
 - Baseline HTTP security headers are configured globally in `next.config.ts` and apply to all routes, including `/admin` and `/api`.
 - Admin session cookies are hardened with `httpOnly`, `sameSite=lax`, `path=/`, and `secure` in production.
 
+## Abuse controls
+
+- Admin login is rate-limited by IP and username, with a hard lockout after repeated abuse from the same IP.
+- Lead submissions use server-side anti-spam controls: honeypot field, minimum submit-time check, and per-IP submission rate limiting.
+
 ## SEO basics
 
 - Route metadata is defined per page through existing metadata utilities.
