@@ -24,7 +24,10 @@ export function SiteFooter() {
             <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-700">
               {LEGAL_LINKS.map((item) => (
                 <li key={item.href}>
-                  <Link className="focus-ring hover:text-[var(--color-brand-700)]" href={item.href}>
+                  <Link
+                    className="text-link text-link-subtle focus-ring text-sm font-medium"
+                    href={item.href}
+                  >
                     {item.label}
                   </Link>
                 </li>

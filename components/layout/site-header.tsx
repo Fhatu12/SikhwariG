@@ -11,7 +11,7 @@ const NAV_ITEMS = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-[var(--color-surface-muted)]/95 backdrop-blur">
       <Container className="flex min-h-16 items-center justify-between gap-8">
         <Link href="/" className="flex items-center shrink-0 w-[140px] sm:w-[160px]">
           <img
@@ -19,7 +19,7 @@ export function SiteHeader() {
             alt="Sikhwari Group"
             width={140}
             height={28}
-            className="h-6 w-auto sm:h-7"
+            className="h-7 w-auto opacity-90 saturate-75 sm:h-8"
           />
         </Link>
         <nav aria-label="Primary navigation" className="flex items-center">
@@ -27,7 +27,7 @@ export function SiteHeader() {
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <Link
-                  className="focus-ring transition-colors hover:text-[var(--color-brand-700)]"
+                  className="text-link text-link-subtle focus-ring text-sm font-medium"
                   href={item.href}
                 >
                   {item.label}

@@ -10,6 +10,7 @@ type ServiceSeed = {
   body: string;
   isTradingInternal: boolean;
   displayOrder: number;
+  watermarkSrc?: string | null;
 };
 
 const DEFAULT_SERVICE_CONTENT: ServiceSeed[] = [
@@ -26,6 +27,7 @@ const DEFAULT_SERVICE_CONTENT: ServiceSeed[] = [
     ].join("\n"),
     isTradingInternal: false,
     displayOrder: 1,
+    watermarkSrc: "/brand/watermarks/sg-telecom-watermark.png",
   },
   {
     key: "cybersecurity",
@@ -40,6 +42,7 @@ const DEFAULT_SERVICE_CONTENT: ServiceSeed[] = [
     ].join("\n"),
     isTradingInternal: false,
     displayOrder: 2,
+    watermarkSrc: "/brand/watermarks/sg-cyber-watermark.png",
   },
   {
     key: "culinary-hospitality",
@@ -53,6 +56,7 @@ const DEFAULT_SERVICE_CONTENT: ServiceSeed[] = [
     ].join("\n"),
     isTradingInternal: false,
     displayOrder: 4,
+    watermarkSrc: "/brand/watermarks/sg-hospitality-watermark.png",
   },
   {
     key: "software-development-digital",
@@ -65,8 +69,15 @@ const DEFAULT_SERVICE_CONTENT: ServiceSeed[] = [
     ].join("\n"),
     isTradingInternal: false,
     displayOrder: 5,
+    watermarkSrc: "/brand/watermarks/sg-digital-watermark.png",
   },
 ];
+
+const SERVICE_WATERMARK_BY_KEY: Record<string, string> = Object.fromEntries(
+  DEFAULT_SERVICE_CONTENT.flatMap((service) =>
+    service.watermarkSrc ? [[service.key, service.watermarkSrc]] : []
+  )
+);
 
 const LEGACY_SERVICE_BODIES: Record<string, string> = {
   "telecommunications-ict-network": [
@@ -108,7 +119,14 @@ export async function ensureServiceContent() {
       prisma.serviceContent.upsert({
         where: { key: service.key },
         update: {},
-        create: service,
+        create: {
+          key: service.key,
+          title: service.title,
+          intro: service.intro,
+          body: service.body,
+          isTradingInternal: service.isTradingInternal,
+          displayOrder: service.displayOrder,
+        },
       })
     )
   );
@@ -136,7 +154,12 @@ export async function ensureServiceContent() {
     })
   );
 
-  return prisma.serviceContent.findMany({
+  const services = await prisma.serviceContent.findMany({
     orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
   });
+
+  return services.map((service) => ({
+    ...service,
+    watermarkSrc: SERVICE_WATERMARK_BY_KEY[service.key] ?? null,
+  }));
 }

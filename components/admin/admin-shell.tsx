@@ -32,7 +32,10 @@ export function AdminShell({ children, title }: AdminShellProps) {
           <ul className="mt-4 flex flex-wrap gap-3 text-sm font-medium text-slate-700">
             {ADMIN_NAV_ITEMS.map((item) => (
               <li key={item.href}>
-                <Link className="hover:text-[var(--color-brand-700)]" href={item.href}>
+                <Link
+                  className="text-link text-link-subtle focus-ring text-sm font-medium"
+                  href={item.href}
+                >
                   {item.label}
                 </Link>
               </li>

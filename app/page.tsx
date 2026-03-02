@@ -22,7 +22,7 @@ export default async function Home() {
 
   return (
     <>
-      <section className="border-b border-slate-200 bg-gradient-to-b from-[var(--color-brand-50)] to-white py-12 sm:py-14">
+      <section className="border-b border-slate-200 bg-gradient-to-b from-[var(--color-surface-muted)] to-white py-12 sm:py-14">
         <Container className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-start">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--color-brand-700)]">

@@ -23,21 +23,31 @@ export default async function ServicesPage() {
         {services.map((service) => (
           <article
             key={service.id}
-            className={`rounded-xl border border-slate-200 bg-white p-5 ${service.isTradingInternal ? "md:col-span-2" : ""}`}
+            className={`relative overflow-hidden rounded-xl border border-slate-200 bg-white p-5 ${service.isTradingInternal ? "md:col-span-2" : ""}`}
           >
-            <h3 className="text-lg font-semibold text-slate-900">{service.title}</h3>
-            {service.intro ? (
-              <p
-                className={`mt-2 text-sm ${service.isTradingInternal ? "font-medium text-slate-700" : "text-slate-600"}`}
-              >
-                {service.intro}
-              </p>
+            {service.watermarkSrc ? (
+              <img
+                src={service.watermarkSrc}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 z-0 hidden h-full w-full select-none object-contain opacity-[0.10] sm:block"
+              />
             ) : null}
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
-              {splitBodyLines(service.body).map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
+            <div className="relative z-10">
+              <h3 className="text-lg font-semibold text-slate-900">{service.title}</h3>
+              {service.intro ? (
+                <p
+                  className={`mt-2 text-sm ${service.isTradingInternal ? "font-medium text-slate-700" : "text-slate-600"}`}
+                >
+                  {service.intro}
+                </p>
+              ) : null}
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                {splitBodyLines(service.body).map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </div>
           </article>
         ))}
       </div>
