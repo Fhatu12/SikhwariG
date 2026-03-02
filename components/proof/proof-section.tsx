@@ -34,7 +34,7 @@ export function ProofSection({
         </div>
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {Object.entries(grouped).map(([kind, kindItems]) => (
-            <article key={kind} className="rounded-xl border border-slate-200 bg-white p-5">
+            <article key={kind} className="h-full rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-800">
                 {PROOF_KIND_LABELS[kindItems[0].kind]}
               </h3>
@@ -45,7 +45,7 @@ export function ProofSection({
                       <a
                         className="text-link focus-ring font-medium"
                         href={item.url}
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         target="_blank"
                       >
                         {item.title}

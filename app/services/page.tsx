@@ -23,7 +23,7 @@ export default async function ServicesPage() {
         {services.map((service) => (
           <article
             key={service.id}
-            className={`relative overflow-hidden rounded-xl border border-slate-200 bg-white p-5 ${service.isTradingInternal ? "md:col-span-2" : ""}`}
+            className={`relative h-full overflow-hidden rounded-xl border border-slate-200 bg-white p-5 ${service.isTradingInternal ? "md:col-span-2" : ""}`}
           >
             {service.watermarkSrc ? (
               <img

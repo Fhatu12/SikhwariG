@@ -68,7 +68,7 @@ export default async function Home() {
       >
         <div className="grid gap-4 sm:grid-cols-3">
           {["Advisory", "Cybersecurity", "Operations support"].map((item) => (
-            <article key={item} className="rounded-xl border border-slate-200 bg-white p-5">
+            <article key={item} className="h-full rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="text-lg font-semibold text-slate-900">{item}</h3>
               <p className="mt-2 text-sm text-slate-600">
                 We provide practical support aligned to operational priorities, governance needs,

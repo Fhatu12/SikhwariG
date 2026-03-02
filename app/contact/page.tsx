@@ -27,7 +27,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <ContactForm initialIntent={initialIntent} />
           <aside className="rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <h2 className="text-base font-semibold text-slate-900">What happens next</h2>
+            <h3 className="text-base font-semibold text-slate-900">What happens next</h3>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
               <li>We review your enquiry and route it to the right service area.</li>
               <li>We may ask 1-2 clarifying questions to confirm scope.</li>
