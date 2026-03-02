@@ -7,6 +7,10 @@
   --font-serif: var(--font-serif);
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   background: var(--color-surface);
