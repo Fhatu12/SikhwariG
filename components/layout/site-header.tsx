@@ -19,7 +19,7 @@ export function SiteHeader() {
             alt="Sikhwari Group"
             width={140}
             height={28}
-            className="h-7 w-auto opacity-90 saturate-75 sm:h-8"
+            className="h-8 w-auto opacity-90 saturate-75 sm:h-9"
           />
         </Link>
         <nav aria-label="Primary navigation" className="flex items-center">
