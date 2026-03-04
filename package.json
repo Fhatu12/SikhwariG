@@ -12,7 +12,8 @@
     "format:write": "prettier --write .",
     "screenshots:install": "playwright install chromium",
     "screenshots": "node scripts/screenshots.mjs",
-    "docs:pdf": "node scripts/docs-pdf.mjs"
+    "docs:pdf": "node scripts/docs-pdf.mjs",
+    "e2e:inquiry": "node scripts/e2e-inquiry-admin.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.0",
