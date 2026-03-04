@@ -33,16 +33,16 @@ export function SiteFooter() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-slate-500">
-              Site built by{" "}
-              <Link className="text-link focus-ring font-medium" href="/services">
-                SG Digital
-              </Link>
-              , a division of SIKHWARI GROUP (Pty) Ltd.
-            </p>
           </div>
           <LegalIdentityBlock className="max-w-md" />
         </div>
+        <p className="mt-6 text-xs text-slate-500">
+          Site built by{" "}
+          <Link className="text-link focus-ring font-medium" href="/services">
+            SG Digital
+          </Link>
+          , a division of SIKHWARI GROUP (Pty) Ltd.
+        </p>
       </Container>
     </footer>
   );
