@@ -13,14 +13,14 @@ export function SiteFooter() {
   return (
     <footer className="mt-16 border-t border-slate-200 bg-[var(--color-surface-muted)] py-10">
       <Container>
-        <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 md:items-start">
+          <div className="flex min-w-0 flex-col gap-6">
             <section
-              className="max-w-md rounded-xl border border-slate-200 bg-[var(--color-surface-muted)] p-4 text-sm text-slate-800"
+              className="w-full rounded-xl border border-slate-200 bg-[var(--color-surface-muted)] p-4 text-sm text-slate-800"
               aria-label="E-mail"
             >
               <h3 className="text-sm font-semibold tracking-wide text-slate-900">E-mail</h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-800">
+              <ul className="mt-4 list-disc space-y-2 pl-5 text-slate-800">
                 {contactEmails.map((email) => (
                   <li key={email}>
                     <a
@@ -33,9 +33,9 @@ export function SiteFooter() {
                 ))}
               </ul>
             </section>
-            <div className="space-y-2 text-sm text-slate-700">
-              <p className="font-medium text-slate-900">Contact</p>
-              <ul className="space-y-1">
+            <div className="w-full space-y-2 text-sm text-slate-700">
+              <p className="text-sm font-semibold tracking-wide text-slate-900">Contact</p>
+              <ul className="mt-4 space-y-1">
                 {contactPhones.map((phone) => (
                   <li key={phone.tel}>
                     {phone.label}:{" "}
@@ -59,17 +59,17 @@ export function SiteFooter() {
               </ul>
             </div>
           </div>
-          <div className="flex max-w-md flex-col gap-6">
+          <div className="flex min-w-0 flex-col gap-6">
             <LegalIdentityBlock className="w-full" />
-            <div className="space-y-2">
+            <div className="w-full space-y-2">
               <p className="font-serif text-lg font-semibold text-slate-900">
                 SIKHWARI GROUP (Pty) Ltd
               </p>
-              <p className="max-w-xl text-sm text-slate-600">
+              <p className="text-sm leading-6 text-slate-600">
                 Professional consulting services across strategic advisory, cybersecurity delivery,
                 and internal operations support.
               </p>
-              <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-700">
+              <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-700">
                 {LEGAL_LINKS.map((item) => (
                   <li key={item.href}>
                     <Link

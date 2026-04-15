@@ -18,12 +18,15 @@ export function LegalIdentityBlock({ className = "" }: LegalIdentityBlockProps) 
       <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-900">
         Legal identity
       </h3>
-      <ul className="mt-3 space-y-2">
+      <ul className="mt-4 space-y-2">
         <li>Full legal name: {legalName}</li>
         <li>Registration No: {registrationNumber}</li>
-        <li>Registered address: {registeredAddress}</li>
+        <li>
+          Registered address:{" "}
+          <span className="whitespace-pre-line">{registeredAddress}</span>
+        </li>
       </ul>
-      <p className="mt-3">{divisionStatement}</p>
+      <p className="mt-4">{divisionStatement}</p>
     </section>
   );
 }

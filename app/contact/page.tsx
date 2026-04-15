@@ -38,7 +38,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               <dl className="mt-3 space-y-3 text-sm text-slate-700">
                 <div>
                   <dt className="font-medium text-slate-900">Registered address</dt>
-                  <dd>{contactRegisteredAddress}</dd>
+                  <dd className="whitespace-pre-line">{contactRegisteredAddress}</dd>
                 </div>
                 <div>
                   <dt className="font-medium text-slate-900">Phone</dt>
