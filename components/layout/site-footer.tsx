@@ -20,7 +20,7 @@ export function SiteFooter() {
               aria-label="E-mail"
             >
               <h3 className="text-sm font-semibold tracking-wide text-slate-900">E-mail</h3>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-800">
                 {contactEmails.map((email) => (
                   <li key={email}>
                     <a
@@ -33,6 +33,34 @@ export function SiteFooter() {
                 ))}
               </ul>
             </section>
+            <div className="space-y-2 text-sm text-slate-700">
+              <p className="font-medium text-slate-900">Contact</p>
+              <ul className="space-y-1">
+                {contactPhones.map((phone) => (
+                  <li key={phone.tel}>
+                    {phone.label}:{" "}
+                    <a
+                      className="text-link text-link-subtle focus-ring font-medium"
+                      href={`tel:${phone.tel}`}
+                    >
+                      {phone.number}
+                    </a>
+                  </li>
+                ))}
+                <li>
+                  Website:{" "}
+                  <a
+                    className="text-link text-link-subtle focus-ring font-medium"
+                    href={`https://${contactWebsite}`}
+                  >
+                    {contactWebsite}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="flex max-w-md flex-col gap-6">
+            <LegalIdentityBlock className="w-full" />
             <div className="space-y-2">
               <p className="font-serif text-lg font-semibold text-slate-900">
                 SIKHWARI GROUP (Pty) Ltd
@@ -54,32 +82,7 @@ export function SiteFooter() {
                 ))}
               </ul>
             </div>
-            <div className="space-y-2 text-sm text-slate-700">
-              <p className="font-medium text-slate-900">Contact</p>
-              <ul className="space-y-1">
-                {contactPhones.map((phone) => (
-                  <li key={phone.tel}>
-                    {phone.label}:{" "}
-                    <a
-                      className="text-link text-link-subtle focus-ring font-medium"
-                      href={`tel:${phone.tel}`}
-                    >
-                      {phone.number}
-                    </a>
-                  </li>
-                ))}
-                <li>
-                  <a
-                    className="text-link text-link-subtle focus-ring font-medium"
-                    href={`https://${contactWebsite}`}
-                  >
-                    {contactWebsite}
-                  </a>
-                </li>
-              </ul>
-            </div>
           </div>
-          <LegalIdentityBlock className="max-w-md" />
         </div>
         <p className="mt-6 text-xs text-slate-500">
           Built by SG Digital | A division of Sikhwari Group (Pty) Ltd
