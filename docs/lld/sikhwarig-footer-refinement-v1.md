@@ -94,11 +94,119 @@ Capture the approved footer structure, legal identity content, and validation ex
 ## 9. Open Issues / Follow-ups
 - Optional future pass: add automated footer content assertions in UI regression coverage if the project adopts broader visual or end-to-end test coverage.
 - Optional future pass: capture refreshed approved screenshots for footer-specific documentation if release evidence is required.
+- Vercel preview can serve public routes, but durable form/admin data operations still require a hosted writable database instead of the current local SQLite deployment pattern.
+- Current Vercel preview URLs return `401 Authentication Required` to unauthenticated requests because deployment protection is still enabled at the project/platform level.
 
 ## 10. Decision Log
 - `2026-04-16` - Approved footer refinement implemented as a minimal structure update: combined contact block, preserved legal identity block, and full-width bottom strip with unchanged legal routes and branding.
+- `2026-04-16` - Vercel deployment-readiness foundation established with project linkage, preview deployment proof, explicit secrets-upload hardening via `.vercelignore`, and documentation of required environment variables and recovery steps. No `vercel.json` was added because Next.js auto-detection is sufficient for the current app.
 
 ## 11. Change Summary / Traceability
 - Footer runtime behavior is documented against the approved content slice.
 - Legal identity values are traceable to the shared legal identity source used by the footer and contact page.
 - This document should be updated if footer structure, legal identity wording, ownership, or validation expectations change in a later approved slice.
+
+## 12. Environment
+- Runtime/framework: `Next.js 16` App Router on Node.js with React `19`.
+- Package manager / lockfile: `npm` with `package-lock.json`.
+- Local scripts:
+  - `npm run dev`
+  - `npm run build`
+  - `npm run start`
+- Vercel configuration:
+  - `vercel.json` is not required for the current baseline.
+  - Vercel successfully auto-detects the project as Next.js.
+- Required environment variables for Vercel:
+  - `DATABASE_URL`
+    - Purpose: Prisma datasource connection string for lead capture and admin-managed content/proof data.
+    - Target environments: `preview`, `production`, and `development` if using Vercel local env sync.
+  - `ADMIN_USERNAME`
+    - Purpose: admin login username.
+    - Target environments: `preview`, `production`, `development`.
+  - `ADMIN_PASSWORD`
+    - Purpose: admin login password.
+    - Target environments: `preview`, `production`, `development`.
+  - `ADMIN_SESSION_SECRET`
+    - Purpose: HMAC signing secret for admin session cookies.
+    - Target environments: `preview`, `production`, `development`.
+  - `NEXT_PUBLIC_SITE_URL`
+    - Purpose: canonical/public site base URL used by SEO metadata.
+    - Target environments:
+      - `preview`: preview deployment URL or approved preview host
+      - `production`: live canonical site URL
+      - local `.env.example`: `http://localhost:3000`
+  - `COMPANY_REGISTRATION_NUMBER`
+    - Purpose: optional override for shared legal identity copy.
+    - Target environments: optional in `preview` and `production`.
+  - `COMPANY_REGISTERED_ADDRESS`
+    - Purpose: optional override for shared legal identity copy.
+    - Target environments: optional in `preview` and `production`.
+- Current Vercel env posture for `fhatu12s-projects/sikhwarig`:
+  - No environment variables were configured in `preview`, `production`, or `development` at the time of this pass.
+
+## 13. Rollout
+- MVP rollout path:
+  1. Keep validation on generated Vercel preview URLs.
+  2. Add required Vercel env vars without exposing values in code or docs.
+  3. Replace the local SQLite deployment pattern with a hosted writable database before relying on form/admin writes in Vercel environments.
+  4. Validate public routes and selected admin/data paths.
+  5. Only then connect the live domain.
+- Domain connection path for `sikhwarigroup.co.za`:
+  - Preferred MVP: keep previews on generated `vercel.app` URLs.
+  - Production apex: connect `sikhwarigroup.co.za` only after preview/env/database readiness is complete.
+  - `www`: either redirect `www.sikhwarigroup.co.za` to the apex or use `www` as primary and redirect apex, but keep one canonical host in `NEXT_PUBLIC_SITE_URL`.
+  - If nameserver migration is considered later, review all existing DNS records first and preserve non-web records before any cutover.
+- This pass did not perform custom-domain cutover or DNS changes.
+
+## 14. Observability
+- Immediate platform checks:
+  - Vercel deployment status / inspector page
+  - Vercel function logs for runtime route failures
+  - build logs for missing environment variables or Prisma initialization errors
+- Minimum smoke targets after each preview/prod deployment:
+  - `/`
+  - `/contact`
+  - one accepted division route
+  - one legal route
+
+## 15. Validation
+- Local validation performed:
+  - `npm run build`
+- Vercel validation performed:
+  - project linked to `fhatu12s-projects/sikhwarig`
+  - generated preview deployment completed successfully
+  - refreshed preview deployment completed after `.vercelignore` was added, and build logs no longer reported local `.env` ingestion
+- Minimum route checks for this slice:
+  - `/`
+  - `/contact`
+  - `/divisions/cybersecurity-services`
+  - `/legal/privacy`
+- Current preview access note:
+  - unauthenticated HTTP checks against the generated preview URL returned `401`, so public route validation is blocked until deployment protection is relaxed or authenticated preview access is used
+- Public footer/legal baseline must remain unchanged during platform work:
+  - `Built by SG Digital | A division of Sikhwari Group (Pty) Ltd`
+  - `A division of Sikhwari Group (Pty) Ltd.`
+  - `/legal/privacy`
+  - `/legal/terms`
+  - `/legal/disclaimer`
+
+## 16. Deployment / Recovery Notes
+- Last known good deployment can be identified from the Vercel project deployment list or inspector URLs.
+- Rollback on Vercel restores an older deployment/build/config state for that project.
+- Prefer rollback when:
+  - the latest deployment breaks public availability
+  - the issue is deployment/config related and a known good deployment exists
+- Prefer fix-forward when:
+  - the issue is isolated, understood, and can be corrected quickly without restoring stale content/config
+- Minimum smoke checks after rollback:
+  - `/`
+  - `/contact`
+  - one division route
+  - one legal route
+  - footer branding/legal links
+
+## 17. Secrets Hygiene
+- `.env*` remains gitignored, with `.env.example` as the only tracked template.
+- `.vercelignore` was added so local Vercel CLI deployments do not upload `.env` files by accident.
+- Secret values must be managed in Vercel environment variables, not committed files or docs.
+- No secret values should be copied into the LLD, README, screenshots, or commit messages.
