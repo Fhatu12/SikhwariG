@@ -11,10 +11,15 @@ export const PROOF_KIND_LABELS: Record<ProofKind, string> = {
 const PROOF_KIND_ORDER: ProofKind[] = ["CERTIFICATION", "PARTNER", "MEMBERSHIP", "AWARD"];
 
 export async function getActiveProofItems() {
-  const items = await prisma.proofItem.findMany({
-    where: { isActive: true },
-    orderBy: [{ kind: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
-  });
+  let items: Awaited<ReturnType<typeof prisma.proofItem.findMany>>;
+  try {
+    items = await prisma.proofItem.findMany({
+      where: { isActive: true },
+      orderBy: [{ kind: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+  } catch {
+    return [];
+  }
 
   const rank = new Map(PROOF_KIND_ORDER.map((kind, index) => [kind, index]));
 
