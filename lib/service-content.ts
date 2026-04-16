@@ -114,52 +114,67 @@ export function splitBodyLines(body: string) {
 }
 
 export async function ensureServiceContent() {
-  await Promise.all(
-    DEFAULT_SERVICE_CONTENT.map((service) =>
-      prisma.serviceContent.upsert({
-        where: { key: service.key },
-        update: {},
-        create: {
-          key: service.key,
-          title: service.title,
-          intro: service.intro,
-          body: service.body,
-          isTradingInternal: service.isTradingInternal,
-          displayOrder: service.displayOrder,
-        },
+  try {
+    await Promise.all(
+      DEFAULT_SERVICE_CONTENT.map((service) =>
+        prisma.serviceContent.upsert({
+          where: { key: service.key },
+          update: {},
+          create: {
+            key: service.key,
+            title: service.title,
+            intro: service.intro,
+            body: service.body,
+            isTradingInternal: service.isTradingInternal,
+            displayOrder: service.displayOrder,
+          },
+        })
+      )
+    );
+
+    await Promise.all(
+      DEFAULT_SERVICE_CONTENT.map((service) => {
+        const legacyBody = LEGACY_SERVICE_BODIES[service.key];
+        if (!legacyBody) {
+          return Promise.resolve();
+        }
+
+        return prisma.serviceContent.updateMany({
+          where: {
+            key: service.key,
+            body: legacyBody,
+          },
+          data: {
+            title: service.title,
+            intro: service.intro,
+            body: service.body,
+            isTradingInternal: service.isTradingInternal,
+            displayOrder: service.displayOrder,
+          },
+        });
       })
-    )
-  );
+    );
 
-  await Promise.all(
-    DEFAULT_SERVICE_CONTENT.map((service) => {
-      const legacyBody = LEGACY_SERVICE_BODIES[service.key];
-      if (!legacyBody) {
-        return Promise.resolve();
-      }
+    const services = await prisma.serviceContent.findMany({
+      orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
+    });
 
-      return prisma.serviceContent.updateMany({
-        where: {
-          key: service.key,
-          body: legacyBody,
-        },
-        data: {
-          title: service.title,
-          intro: service.intro,
-          body: service.body,
-          isTradingInternal: service.isTradingInternal,
-          displayOrder: service.displayOrder,
-        },
-      });
-    })
-  );
-
-  const services = await prisma.serviceContent.findMany({
-    orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
-  });
-
-  return services.map((service) => ({
-    ...service,
-    watermarkSrc: SERVICE_WATERMARK_BY_KEY[service.key] ?? null,
-  }));
+    return services.map((service) => ({
+      ...service,
+      watermarkSrc: SERVICE_WATERMARK_BY_KEY[service.key] ?? null,
+    }));
+  } catch {
+    return DEFAULT_SERVICE_CONTENT.map((service) => ({
+      id: `seed-${service.key}`,
+      key: service.key,
+      title: service.title,
+      intro: service.intro,
+      body: service.body,
+      isTradingInternal: service.isTradingInternal,
+      displayOrder: service.displayOrder,
+      createdAt: new Date(0),
+      updatedAt: new Date(0),
+      watermarkSrc: service.watermarkSrc ?? null,
+    }));
+  }
 }
