@@ -95,11 +95,13 @@ Capture the approved footer structure, legal identity content, and validation ex
 - Optional future pass: add automated footer content assertions in UI regression coverage if the project adopts broader visual or end-to-end test coverage.
 - Optional future pass: capture refreshed approved screenshots for footer-specific documentation if release evidence is required.
 - Vercel preview can serve public routes, but durable form/admin data operations still require a hosted writable database instead of the current local SQLite deployment pattern.
-- Current Vercel preview URLs return `401 Authentication Required` to unauthenticated requests because deployment protection is still enabled at the project/platform level.
+- Git integration is not connected for `fhatu12s-projects/sikhwarig` (CLI connect attempt failed), so branch-driven previews and branch-scoped Preview environment variables are not yet reproducible.
+- Preview environment variables are not configured, so Preview is currently operating in a tolerated, non-parity posture where `/services` and proof content may fall back when the primary Prisma-backed source is unavailable.
 
 ## 10. Decision Log
 - `2026-04-16` - Approved footer refinement implemented as a minimal structure update: combined contact block, preserved legal identity block, and full-width bottom strip with unchanged legal routes and branding.
 - `2026-04-16` - Vercel deployment-readiness foundation established with project linkage, preview deployment proof, explicit secrets-upload hardening via `.vercelignore`, and documentation of required environment variables and recovery steps. No `vercel.json` was added because Next.js auto-detection is sufficient for the current app.
+- `2026-04-16` - MVP parity policy defined: Preview should have its own required env contract and Git-driven reproducibility; until Git/env parity is in place, Preview may operate with accepted fail-soft fallbacks for `/services` and proof content without changing public copy.
 
 ## 11. Change Summary / Traceability
 - Footer runtime behavior is documented against the approved content slice.
@@ -142,7 +144,10 @@ Capture the approved footer structure, legal identity content, and validation ex
     - Purpose: optional override for shared legal identity copy.
     - Target environments: optional in `preview` and `production`.
 - Current Vercel env posture for `fhatu12s-projects/sikhwarig`:
-  - No environment variables were configured in `preview`, `production`, or `development` at the time of this pass.
+  - `production`: required variables are configured.
+  - `preview`: no variables are configured.
+  - `development`: no variables are configured.
+  - Git integration: project is not connected to the GitHub repository, which blocks reliable branch-based Preview env configuration.
 
 ## 13. Rollout
 - MVP rollout path:
@@ -182,7 +187,7 @@ Capture the approved footer structure, legal identity content, and validation ex
   - `/divisions/cybersecurity-services`
   - `/legal/privacy`
 - Current preview access note:
-  - unauthenticated HTTP checks against the generated preview URL returned `401`, so public route validation is blocked until deployment protection is relaxed or authenticated preview access is used
+  - preview deployments are publicly reachable for route validation; parity focus is now on Git integration and Preview env completeness rather than deployment protection
 - Public footer/legal baseline must remain unchanged during platform work:
   - `Built by SG Digital | A division of Sikhwari Group (Pty) Ltd`
   - `A division of Sikhwari Group (Pty) Ltd.`
@@ -210,3 +215,30 @@ Capture the approved footer structure, legal identity content, and validation ex
 - `.vercelignore` was added so local Vercel CLI deployments do not upload `.env` files by accident.
 - Secret values must be managed in Vercel environment variables, not committed files or docs.
 - No secret values should be copied into the LLD, README, screenshots, or commit messages.
+
+## 18. Content-source policy: `/services` (MVP)
+### Primary source
+- **Primary source** for `/services` is the Prisma-backed `ServiceContent` table when the environment has a working `DATABASE_URL` and is DB-ready.
+
+### Preview policy
+- Preview should prefer the **primary source** when Preview env parity is configured (Preview has its required env contract and a preview-safe DB target).
+- Preview may use **fail-soft fallback** content only when the environment is intentionally non-DB-ready or the primary source is temporarily unavailable.
+- If Preview is serving fallback because required Preview env vars are missing, treat this as **tolerated temporary operation**, not target-state parity.
+
+### Production policy
+- Production should use the **primary source**.
+- Production fallback is **emergency continuity behavior only**.
+- If Production serves fallback because the primary source is missing, unreachable, or unconfigured, treat this as **misconfiguration** requiring remediation.
+
+### Misconfiguration is defined as
+- Required env vars missing for the target environment.
+- Preview relying on production-only env setup.
+- Git integration absent when reproducible branch-preview behavior is expected.
+- `NEXT_PUBLIC_SITE_URL` not matching target environment intent.
+- `/services` serving fallback in production due to missing primary configuration.
+- Preview/prod pointing at an unsafe or unintended data source.
+
+### Validation expectation
+- `/services` must render successfully on Preview after redeploy.
+- Whether it is using primary source or fallback must be known and documented.
+- Fallback in Preview is acceptable only when explicitly explained by the environment posture above.
