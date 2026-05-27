@@ -4,14 +4,8 @@ export const contactWebsite = "sikhwarigroup.co.za";
 
 export { registeredAddress as contactRegisteredAddress } from "./legal-identity";
 
-export const contactPhones = [
-  { label: "Fhatuwani", number: "082 997 4112", tel: "+27829974112" },
-  { label: "Tendani", number: "082 998 4112", tel: "+27829984112" },
-] as const;
-
 export const contactEmails = [
   "info@sikhwarigroup.co.za",
   "fhatuwani.sikhwari@sikhwarigroup.co.za",
   "tendani.sikhwari@sikhwarigroup.co.za",
 ] as const;
-

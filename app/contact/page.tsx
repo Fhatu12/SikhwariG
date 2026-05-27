@@ -2,7 +2,6 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { Section } from "@/components/layout/section";
 import {
   contactEmails,
-  contactPhones,
   contactRegisteredAddress,
   contactWebsite,
 } from "@/lib/contact-details";
@@ -39,22 +38,6 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                 <div>
                   <dt className="font-medium text-slate-900">Registered address</dt>
                   <dd className="whitespace-pre-line">{contactRegisteredAddress}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-slate-900">Phone</dt>
-                  <dd className="space-y-1">
-                    {contactPhones.map((phone) => (
-                      <div key={phone.tel}>
-                        {phone.label}:{" "}
-                        <a
-                          className="text-link text-link-subtle focus-ring font-medium"
-                          href={`tel:${phone.tel}`}
-                        >
-                          {phone.number}
-                        </a>
-                      </div>
-                    ))}
-                  </dd>
                 </div>
                 <div>
                   <dt className="font-medium text-slate-900">Email</dt>

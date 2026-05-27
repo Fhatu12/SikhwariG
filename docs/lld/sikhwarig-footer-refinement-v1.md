@@ -21,10 +21,10 @@ Capture the approved footer structure, legal identity content, and validation ex
 ### Approved structure
 - Combine contact and email content into one footer block with three grouped entries:
   - `Fhatuwani Sikhwari`
-  - `Contact: 0829974112`
+  - `Contact: [removed]`
   - `E-mail: Fhatuwani.Sikhwari@sikhwarigroup.co.za`
   - `Tendani Sikhwari`
-  - `Contact: 0829984112`
+  - `Contact: [removed]`
   - `E-mail: Tendani.Sikhwari@sikhwarigroup.co.za`
   - `Inquiries`
   - `Email: info@sikhwarigroup.co.za`
