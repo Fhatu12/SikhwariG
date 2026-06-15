@@ -21,8 +21,8 @@ export function SiteFooter() {
             SIKHWARI GROUP (Pty) Ltd
           </p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Professional consulting services across strategic advisory, cybersecurity delivery, and
-            internal operations support.
+            Professional services across telecommunications, cybersecurity, and software
+            development.
           </p>
           <ul className="mt-4 flex w-full flex-wrap gap-x-6 gap-y-2 text-sm text-slate-700">
             {LEGAL_LINKS.map((item) => (

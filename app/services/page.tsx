@@ -5,7 +5,7 @@ import { ensureServiceContent, splitBodyLines } from "@/lib/service-content";
 export const metadata = buildMetadata({
   title: "Services",
   description:
-    "Service overview for advisory, cybersecurity, and internal operations under Sikhwari Group (Pty) Ltd.",
+    "Service overview for telecommunications, cybersecurity, and software development under Sikhwari Group (Pty) Ltd.",
   path: "/services",
 });
 
