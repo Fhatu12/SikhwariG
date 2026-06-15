@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { checkLeadSubmissionRateLimit } from "@/lib/rate-limit";
 
@@ -53,6 +54,10 @@ function getIpAddress(requestHeaders: Headers) {
   const realIp = requestHeaders.get("x-real-ip");
   const ip = forwardedFor?.split(",")[0]?.trim() || realIp?.trim() || "";
   return ip.slice(0, MAX_IP_LENGTH);
+}
+
+function isLeadStorageConfigured() {
+  return Boolean(process.env.DATABASE_URL?.trim());
 }
 
 export async function POST(request: Request) {
@@ -146,19 +151,39 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Message could not be accepted." }, { status: 400 });
   }
 
-  await prisma.lead.create({
-    data: {
-      name,
-      email,
-      phone: phone || null,
-      intent,
-      serviceArea: serviceArea || null,
-      message,
-      ipAddress: ipAddress || null,
-      userAgent: userAgent || null,
-      sourcePath: sourcePath || null,
-    },
-  });
+  if (!isLeadStorageConfigured()) {
+    return NextResponse.json(
+      { error: "Enquiry submission is temporarily unavailable. Please try again shortly." },
+      { status: 503 }
+    );
+  }
+
+  try {
+    await prisma.lead.create({
+      data: {
+        name,
+        email,
+        phone: phone || null,
+        intent,
+        serviceArea: serviceArea || null,
+        message,
+        ipAddress: ipAddress || null,
+        userAgent: userAgent || null,
+        sourcePath: sourcePath || null,
+      },
+    });
+  } catch (error) {
+    console.error("Lead submission failed", error);
+
+    if (error instanceof Prisma.PrismaClientInitializationError) {
+      return NextResponse.json(
+        { error: "Enquiry submission is temporarily unavailable. Please try again shortly." },
+        { status: 503 }
+      );
+    }
+
+    throw error;
+  }
 
   return NextResponse.json({ ok: true });
 }
