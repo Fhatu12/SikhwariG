@@ -11,8 +11,21 @@ const DEFAULT_REGISTERED_ADDRESS_PARTS = [
   "0144",
 ] as const;
 
+function normalizeRegisteredAddress(value: string) {
+  return value
+    .replace(/\\r\\n|\\n|\\r/g, ", ")
+    .replace(/\r?\n/g, ", ")
+    .replace(/\s*,\s*/g, ", ")
+    .replace(/(?:,\s*){2,}/g, ", ")
+    .replace(/\s{2,}/g, " ")
+    .replace(/^[,\s.]+|[,\s.]+$/g, "")
+    .trim();
+}
+
 export const registeredAddress =
-  process.env.COMPANY_REGISTERED_ADDRESS?.trim() || DEFAULT_REGISTERED_ADDRESS_PARTS.join(", ");
+  normalizeRegisteredAddress(
+    process.env.COMPANY_REGISTERED_ADDRESS?.trim() || DEFAULT_REGISTERED_ADDRESS_PARTS.join(", ")
+  );
 
 export const divisionStatement =
   "All service lines are divisions of a single legal entity (not separate companies).";
