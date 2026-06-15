@@ -57,7 +57,7 @@ function getIpAddress(requestHeaders: Headers) {
 }
 
 function isLeadStorageConfigured() {
-  return Boolean(process.env.DATABASE_URL?.trim());
+  return Boolean(process.env.PRISMA_POSTGRES_DATABASE_URL?.trim());
 }
 
 export async function POST(request: Request) {

@@ -657,7 +657,7 @@ async function main() {
   const adminUsername = requireEnv("ADMIN_USERNAME");
   const adminPassword = requireEnv("ADMIN_PASSWORD");
   requireEnv("ADMIN_SESSION_SECRET");
-  requireEnv("DATABASE_URL");
+  requireEnv("PRISMA_POSTGRES_DATABASE_URL");
 
   const adminUsernameMasked = maskUsername(adminUsername);
   const prisma = new PrismaClient();

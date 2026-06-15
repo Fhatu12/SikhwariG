@@ -30,7 +30,7 @@ const PREVIEW_SITE_URL =
   process.env.PREVIEW_SITE_URL?.trim() || DEFAULT_PREVIEW_SITE_URL;
 
 const REQUIRED_FROM_ENV = [
-  "DATABASE_URL",
+  "PRISMA_POSTGRES_DATABASE_URL",
   "ADMIN_USERNAME",
   "ADMIN_PASSWORD",
   "ADMIN_SESSION_SECRET",
@@ -42,7 +42,7 @@ const OPTIONAL_FROM_ENV = [
 ];
 
 const SENSITIVE = new Set([
-  "DATABASE_URL",
+  "PRISMA_POSTGRES_DATABASE_URL",
   "ADMIN_USERNAME",
   "ADMIN_PASSWORD",
   "ADMIN_SESSION_SECRET",
@@ -181,10 +181,10 @@ async function main() {
     process.exit(2);
   }
 
-  const dbAudit = auditDatabaseUrlForPreview(env.DATABASE_URL);
+  const dbAudit = auditDatabaseUrlForPreview(env.PRISMA_POSTGRES_DATABASE_URL);
   if (!dbAudit.ok) {
     console.error(
-      `[vercel-preview-env-from-local] DATABASE_URL blocked for Preview: ${dbAudit.code}`,
+      `[vercel-preview-env-from-local] PRISMA_POSTGRES_DATABASE_URL blocked for Preview: ${dbAudit.code}`,
     );
     process.exit(3);
   }
