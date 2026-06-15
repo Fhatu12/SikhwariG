@@ -46,9 +46,9 @@ export default async function AboutPage() {
               Director, Telecommunications, ICT and Network Services
             </p>
             <p className="mt-3 text-sm leading-6 text-slate-700">
-              Leads delivery across telecommunications and digital services, with a focus on
-              reliable execution, operational governance, and authorised security support. Brings
-              deep experience in connectivity environments and practical service improvement.
+              Fhatuwani Sikhwari brings experience across telecommunications, project delivery,
+              digital services, and cybersecurity, with a focus on practical execution and
+              accountable delivery.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {[
