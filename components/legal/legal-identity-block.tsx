@@ -22,8 +22,7 @@ export function LegalIdentityBlock({ className = "" }: LegalIdentityBlockProps) 
         <li>Full legal name: {legalName}</li>
         <li>Registration No: {registrationNumber}</li>
         <li>
-          Registered address:{" "}
-          <span className="whitespace-pre-line">{registeredAddress}</span>
+          Registered address: <span>{registeredAddress}</span>
         </li>
       </ul>
       <p className="mt-4">{divisionStatement}</p>

@@ -95,6 +95,29 @@ export default async function AboutPage() {
         </div>
       </Section>
 
+      <Section
+        title="Selected Work"
+        description="A snapshot of practical delivery across digital, commerce, and operational execution."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <article className="rounded-xl border border-slate-200 bg-white p-5">
+            <h3 className="text-lg font-semibold text-slate-900">Mzansi Select</h3>
+            <p className="mt-2 text-sm font-medium text-slate-700">
+              E-commerce and digital storefront delivery
+            </p>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              Shopify storefront setup, theme refinement, product and collection structure,
+              launch-readiness fixes, and live-site polish.
+            </p>
+            <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-slate-600">
+              <li>improved storefront structure and presentation</li>
+              <li>refined department and collection experience</li>
+              <li>launch-readiness and live-site fixes completed</li>
+            </ul>
+          </article>
+        </div>
+      </Section>
+
       <ProofSection
         items={proofItems}
         title="Proof and governance"
