@@ -1,0 +1,235 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import nodemailer from "nodemailer";
+import { buildLeadNotificationMessage } from "@/lib/email/lead-notification";
+import { prisma } from "@/lib/prisma";
+import { POST } from "./route";
+
+vi.mock("server-only", () => ({}));
+
+vi.mock("next/headers", () => ({
+  headers: vi.fn(
+    async () => new Headers({ "user-agent": "vitest", "x-forwarded-for": "127.0.0.1" })
+  ),
+}));
+
+vi.mock("@/lib/rate-limit", () => ({
+  checkLeadSubmissionRateLimit: vi.fn(() => ({ allowed: true })),
+}));
+
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    lead: {
+      create: vi.fn(),
+    },
+  },
+}));
+
+const sendMail = vi.fn();
+
+vi.mock("nodemailer", () => ({
+  default: {
+    createTransport: vi.fn(() => ({ sendMail })),
+  },
+}));
+
+const OLD_ENV = process.env;
+
+function setCompleteSmtpEnv() {
+  process.env.SMTP_HOST = "smtp.example.test";
+  process.env.SMTP_PORT = "465";
+  process.env.SMTP_SECURE = "true";
+  process.env.SMTP_USER = "mailer@example.test";
+  process.env.SMTP_PASSWORD = "test-password";
+  process.env.LEAD_NOTIFICATION_FROM = "info@sikhwarigroup.co.za";
+  process.env.LEAD_NOTIFICATION_TO = "info@sikhwarigroup.co.za";
+}
+
+function validPayload(overrides: Record<string, unknown> = {}) {
+  return {
+    name: "Jane Customer",
+    email: "jane.customer@example.com",
+    phone: "+27110000000",
+    company: "Customer Holdings",
+    intent: "Request a quote",
+    serviceArea: "Software Development and Digital Services",
+    message: "Please help with a portal build.",
+    formStartedAt: Date.now() - 5000,
+    sourcePath: "/contact",
+    ...overrides,
+  };
+}
+
+function postRequest(payload: Record<string, unknown>) {
+  return new Request("https://example.test/api/leads", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+async function readJson(response: Response) {
+  return response.json() as Promise<unknown>;
+}
+
+describe("lead notification content", () => {
+  it("includes all supplied enquiry fields", () => {
+    const message = buildLeadNotificationMessage({
+      leadId: 42,
+      submittedAt: new Date("2026-07-26T08:30:00.000Z"),
+      name: "Jane Customer",
+      email: "jane.customer@example.com",
+      phone: "+27110000000",
+      company: "Customer Holdings",
+      intent: "Request a quote",
+      serviceArea: "Software Development and Digital Services",
+      message: "Please help with a portal build.",
+    });
+
+    expect(message.text).toContain("Lead reference ID: 42");
+    expect(message.text).toContain("Submitted at: 2026-07-26T08:30:00.000Z");
+    expect(message.text).toContain("Customer name: Jane Customer");
+    expect(message.text).toContain("Customer email: jane.customer@example.com");
+    expect(message.text).toContain("Customer phone: +27110000000");
+    expect(message.text).toContain("Company: Customer Holdings");
+    expect(message.text).toContain("Enquiry type: Request a quote");
+    expect(message.text).toContain("Service area: Software Development and Digital Services");
+    expect(message.text).toContain("Please help with a portal build.");
+    expect(message.text).toContain("This enquiry has been saved in the website database.");
+  });
+
+  it("handles optional fields cleanly", () => {
+    const message = buildLeadNotificationMessage({
+      leadId: 43,
+      submittedAt: new Date("2026-07-26T08:30:00.000Z"),
+      name: "Jane Customer",
+      email: "jane.customer@example.com",
+      phone: null,
+      company: null,
+      intent: "General enquiry",
+      serviceArea: null,
+      message: "Hello",
+    });
+
+    expect(message.text).not.toContain("Customer phone:");
+    expect(message.text).not.toContain("Company:");
+    expect(message.text).not.toContain("Service area:");
+  });
+
+  it("escapes HTML user content", () => {
+    const message = buildLeadNotificationMessage({
+      leadId: 44,
+      submittedAt: new Date("2026-07-26T08:30:00.000Z"),
+      name: "<Jane>",
+      email: "jane.customer@example.com",
+      phone: null,
+      company: "A&B",
+      intent: "Request a quote",
+      serviceArea: null,
+      message: "<script>alert('x')</script>",
+    });
+
+    expect(message.html).toContain("&lt;Jane&gt;");
+    expect(message.html).toContain("A&amp;B");
+    expect(message.html).toContain("&lt;script&gt;alert(&#39;x&#39;)&lt;/script&gt;");
+    expect(message.html).not.toContain("<script>");
+  });
+});
+
+describe("POST /api/leads notifications", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    process.env = { ...OLD_ENV };
+    process.env.PRISMA_POSTGRES_DATABASE_URL = "postgresql://placeholder.example/db";
+    setCompleteSmtpEnv();
+    vi.mocked(prisma.lead.create).mockResolvedValue({
+      id: 101,
+      name: "Jane Customer",
+      email: "jane.customer@example.com",
+      phone: "+27110000000",
+      intent: "Request a quote",
+      serviceArea: "Software Development and Digital Services",
+      message: "Please help with a portal build.",
+      createdAt: new Date("2026-07-26T08:30:00.000Z"),
+      ipAddress: "127.0.0.1",
+      userAgent: "vitest",
+      sourcePath: "/contact",
+    });
+    sendMail.mockResolvedValue({ accepted: ["info@sikhwarigroup.co.za"] });
+  });
+
+  it("uses fixed subject and recipient with customer email only as Reply-To", async () => {
+    const response = await POST(postRequest(validPayload()));
+
+    expect(response.status).toBe(200);
+    expect(await readJson(response)).toEqual({ ok: true });
+    expect(sendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        from: {
+          name: "Sikhwari Group Website",
+          address: "info@sikhwarigroup.co.za",
+        },
+        to: "info@sikhwarigroup.co.za",
+        replyTo: "jane.customer@example.com",
+        subject: "New Sikhwari Group website enquiry",
+      })
+    );
+    expect(sendMail.mock.calls[0][0].subject).not.toContain("Jane Customer");
+    expect(sendMail.mock.calls[0][0].to).not.toContain("jane.customer@example.com");
+  });
+
+  it("sends mail after successful database insert", async () => {
+    await POST(postRequest(validPayload()));
+
+    expect(prisma.lead.create).toHaveBeenCalledOnce();
+    expect(nodemailer.createTransport).toHaveBeenCalledWith({
+      host: "smtp.example.test",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "mailer@example.test",
+        pass: "test-password",
+      },
+    });
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it("keeps a successful API response when SMTP delivery fails", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    sendMail.mockRejectedValue(new Error("smtp unavailable"));
+
+    const response = await POST(postRequest(validPayload()));
+
+    expect(response.status).toBe(200);
+    expect(await readJson(response)).toEqual({ ok: true });
+    expect(errorSpy).toHaveBeenCalledWith("Lead notification failed after successful persistence.");
+  });
+
+  it("safely disables notification when SMTP configuration is incomplete", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    delete process.env.SMTP_PASSWORD;
+
+    const response = await POST(postRequest(validPayload()));
+
+    expect(response.status).toBe(200);
+    expect(await readJson(response)).toEqual({ ok: true });
+    expect(sendMail).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Lead notification disabled: SMTP configuration incomplete or invalid."
+    );
+  });
+
+  it("returns 400 and sends no email for invalid lead input", async () => {
+    const response = await POST(postRequest(validPayload({ name: "", email: "not-an-email" })));
+
+    expect(response.status).toBe(400);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
+    expect(sendMail).not.toHaveBeenCalled();
+  });
+
+  it("sends no email when database persistence fails", async () => {
+    vi.mocked(prisma.lead.create).mockRejectedValue(new Error("database unavailable"));
+
+    await expect(POST(postRequest(validPayload()))).rejects.toThrow("database unavailable");
+    expect(sendMail).not.toHaveBeenCalled();
+  });
+});

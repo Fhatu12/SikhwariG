@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { sendLeadNotification } from "@/lib/email/lead-notification";
 import { prisma } from "@/lib/prisma";
 import { checkLeadSubmissionRateLimit } from "@/lib/rate-limit";
 
@@ -8,6 +9,7 @@ const MAX_NAME_LENGTH = 80;
 const MAX_EMAIL_LENGTH = 120;
 const MAX_PHONE_LENGTH = 30;
 const MAX_MESSAGE_LENGTH = 2000;
+const MAX_COMPANY_LENGTH = 120;
 const MAX_SERVICE_AREA_LENGTH = 80;
 const MAX_SOURCE_PATH_LENGTH = 200;
 const MAX_USER_AGENT_LENGTH = 512;
@@ -25,6 +27,7 @@ type LeadPayload = {
   name?: unknown;
   email?: unknown;
   phone?: unknown;
+  company?: unknown;
   intent?: unknown;
   serviceArea?: unknown;
   message?: unknown;
@@ -72,6 +75,7 @@ export async function POST(request: Request) {
   const name = asTrimmedString(payload.name);
   const email = asTrimmedString(payload.email);
   const phone = asTrimmedString(payload.phone);
+  const company = asTrimmedString(payload.company);
   const intent = asTrimmedString(payload.intent);
   const serviceArea = asTrimmedString(payload.serviceArea);
   const message = asTrimmedString(payload.message);
@@ -121,6 +125,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please provide a valid phone number." }, { status: 400 });
   }
 
+  if (company.length > MAX_COMPANY_LENGTH) {
+    return NextResponse.json(
+      { error: "Company must be 120 characters or fewer." },
+      { status: 400 }
+    );
+  }
+
   if (!ALLOWED_INTENTS.has(intent)) {
     return NextResponse.json({ error: "Please select a valid reason." }, { status: 400 });
   }
@@ -159,7 +170,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await prisma.lead.create({
+    const savedLead = await prisma.lead.create({
       data: {
         name,
         email,
@@ -171,6 +182,18 @@ export async function POST(request: Request) {
         userAgent: userAgent || null,
         sourcePath: sourcePath || null,
       },
+    });
+
+    await sendLeadNotification({
+      leadId: savedLead.id,
+      submittedAt: savedLead.createdAt,
+      name,
+      email,
+      phone: phone || null,
+      company: company || null,
+      intent,
+      serviceArea: serviceArea || null,
+      message,
     });
   } catch (error) {
     console.error("Lead submission failed", error);
