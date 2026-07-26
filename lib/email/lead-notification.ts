@@ -27,6 +27,13 @@ type SmtpConfig = {
   to: string;
 };
 
+type SmtpDiagnosticError = {
+  code?: unknown;
+  command?: unknown;
+  responseCode?: unknown;
+  name?: unknown;
+};
+
 function envValue(name: string) {
   return (process.env[name] ?? "").trim();
 }
@@ -51,19 +58,31 @@ function parseBoolean(value: string) {
   return null;
 }
 
-function getSmtpConfig(): SmtpConfig | null {
-  const host = envValue("SMTP_HOST");
-  const portRaw = envValue("SMTP_PORT");
-  const secureRaw = envValue("SMTP_SECURE").toLowerCase();
-  const user = envValue("SMTP_USER");
-  const password = envValue("SMTP_PASSWORD");
-  const from = envValue("LEAD_NOTIFICATION_FROM");
-  const to = envValue("LEAD_NOTIFICATION_TO");
+function getRequiredEnv(name: string, missingEnv: string[]) {
+  const value = envValue(name);
+
+  if (!value) {
+    missingEnv.push(name);
+  }
+
+  return value;
+}
+
+function getSmtpConfig(): { config: SmtpConfig | null; missingEnv: string[] } {
+  const missingEnv: string[] = [];
+  const host = getRequiredEnv("SMTP_HOST", missingEnv);
+  const portRaw = getRequiredEnv("SMTP_PORT", missingEnv);
+  const secureRaw = getRequiredEnv("SMTP_SECURE", missingEnv).toLowerCase();
+  const user = getRequiredEnv("SMTP_USER", missingEnv);
+  const password = getRequiredEnv("SMTP_PASSWORD", missingEnv);
+  const from = getRequiredEnv("LEAD_NOTIFICATION_FROM", missingEnv);
+  const to = getRequiredEnv("LEAD_NOTIFICATION_TO", missingEnv);
   const port = Number(portRaw);
   const secure = parseBoolean(secureRaw);
   const headerValues = [host, user, from, to];
 
   if (
+    missingEnv.length > 0 ||
     !host ||
     !Number.isInteger(port) ||
     port < 1 ||
@@ -77,10 +96,71 @@ function getSmtpConfig(): SmtpConfig | null {
     !isEmailAddress(from) ||
     !isEmailAddress(to)
   ) {
-    return null;
+    return { config: null, missingEnv };
   }
 
-  return { host, port, secure, user, password, from, to };
+  return { config: { host, port, secure, user, password, from, to }, missingEnv };
+}
+
+function countValues(value: unknown) {
+  return Array.isArray(value) ? value.length : 0;
+}
+
+function safeString(value: unknown) {
+  return typeof value === "string" && value ? value : undefined;
+}
+
+function safeNumber(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+function getResponseCode(info: unknown) {
+  if (typeof info !== "object" || info === null || !("response" in info)) {
+    return undefined;
+  }
+
+  const response = (info as { response?: unknown }).response;
+  if (typeof response !== "string") {
+    return undefined;
+  }
+
+  const match = response.match(/^(\d{3})\b/);
+  return match ? Number(match[1]) : undefined;
+}
+
+function logSendResult(info: unknown) {
+  const result = typeof info === "object" && info !== null ? (info as Record<string, unknown>) : {};
+  const logPayload: Record<string, unknown> = {
+    event: "lead_notification_send_result",
+    acceptedCount: countValues(result.accepted),
+    rejectedCount: countValues(result.rejected),
+    messageIdPresent: typeof result.messageId === "string" && result.messageId.length > 0,
+    notificationConfigured: true,
+  };
+  const responseCode = getResponseCode(result);
+
+  if (Array.isArray(result.pending)) {
+    logPayload.pendingCount = countValues(result.pending);
+  }
+
+  if (responseCode) {
+    logPayload.responseCode = responseCode;
+  }
+
+  console.info(logPayload);
+}
+
+function logSendFailure(error: unknown) {
+  const diagnostic = error as SmtpDiagnosticError;
+
+  console.error({
+    event: "lead_notification_send_failure",
+    code: safeString(diagnostic.code),
+    command: safeString(diagnostic.command),
+    responseCode: safeNumber(diagnostic.responseCode),
+    errorName: safeString(diagnostic.name),
+    notificationConfigured: true,
+  });
 }
 
 function escapeHtml(value: string) {
@@ -155,10 +235,14 @@ export function buildLeadNotificationMessage(lead: LeadNotification) {
 }
 
 export async function sendLeadNotification(lead: LeadNotification) {
-  const config = getSmtpConfig();
+  const { config, missingEnv } = getSmtpConfig();
 
   if (!config) {
-    console.warn("Lead notification disabled: SMTP configuration incomplete or invalid.");
+    console.warn({
+      event: "lead_notification_disabled",
+      missingEnv,
+      notificationConfigured: false,
+    });
     return;
   }
 
@@ -174,7 +258,7 @@ export async function sendLeadNotification(lead: LeadNotification) {
   });
 
   try {
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: {
         name: FROM_NAME,
         address: config.from,
@@ -185,7 +269,8 @@ export async function sendLeadNotification(lead: LeadNotification) {
       text: message.text,
       html: message.html,
     });
-  } catch {
-    console.error("Lead notification failed after successful persistence.");
+    logSendResult(info);
+  } catch (error) {
+    logSendFailure(error);
   }
 }

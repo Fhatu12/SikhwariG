@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import nodemailer from "nodemailer";
 import { buildLeadNotificationMessage } from "@/lib/email/lead-notification";
 import { prisma } from "@/lib/prisma";
@@ -69,6 +69,10 @@ function postRequest(payload: Record<string, unknown>) {
 
 async function readJson(response: Response) {
   return response.json() as Promise<unknown>;
+}
+
+function stringifyLogCalls(mock: ReturnType<typeof vi.fn>) {
+  return JSON.stringify(mock.mock.calls);
 }
 
 describe("lead notification content", () => {
@@ -157,6 +161,10 @@ describe("POST /api/leads notifications", () => {
     sendMail.mockResolvedValue({ accepted: ["info@sikhwarigroup.co.za"] });
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("uses fixed subject and recipient with customer email only as Reply-To", async () => {
     const response = await POST(postRequest(validPayload()));
 
@@ -193,29 +201,91 @@ describe("POST /api/leads notifications", () => {
     expect(sendMail).toHaveBeenCalledOnce();
   });
 
+  it("logs safe accepted and rejected counts after sendMail completes", async () => {
+    const infoSpy = vi.spyOn(console, "info").mockImplementation(() => undefined);
+    sendMail.mockResolvedValue({
+      accepted: ["info@sikhwarigroup.co.za"],
+      rejected: [],
+      pending: ["queued"],
+      messageId: "do-not-log-complete-message-id",
+      response: "250 2.0.0 Ok: queued as do-not-log",
+    });
+
+    const response = await POST(postRequest(validPayload()));
+
+    expect(response.status).toBe(200);
+    expect(infoSpy).toHaveBeenCalledWith({
+      event: "lead_notification_send_result",
+      acceptedCount: 1,
+      rejectedCount: 0,
+      pendingCount: 1,
+      messageIdPresent: true,
+      responseCode: 250,
+      notificationConfigured: true,
+    });
+
+    const logs = stringifyLogCalls(infoSpy);
+    expect(logs).not.toContain("Jane Customer");
+    expect(logs).not.toContain("jane.customer@example.com");
+    expect(logs).not.toContain("+27110000000");
+    expect(logs).not.toContain("Customer Holdings");
+    expect(logs).not.toContain("Please help with a portal build.");
+    expect(logs).not.toContain("info@sikhwarigroup.co.za");
+    expect(logs).not.toContain("do-not-log-complete-message-id");
+    expect(logs).not.toContain("do-not-log");
+    expect(logs).not.toContain("test-password");
+  });
+
   it("keeps a successful API response when SMTP delivery fails", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    sendMail.mockRejectedValue(new Error("smtp unavailable"));
+    const smtpError = Object.assign(new Error("contains customer jane.customer@example.com"), {
+      code: "EAUTH",
+      command: "AUTH PLAIN",
+      responseCode: 535,
+    });
+    sendMail.mockRejectedValue(smtpError);
 
     const response = await POST(postRequest(validPayload()));
 
     expect(response.status).toBe(200);
     expect(await readJson(response)).toEqual({ ok: true });
-    expect(errorSpy).toHaveBeenCalledWith("Lead notification failed after successful persistence.");
+    expect(errorSpy).toHaveBeenCalledWith({
+      event: "lead_notification_send_failure",
+      code: "EAUTH",
+      command: "AUTH PLAIN",
+      responseCode: 535,
+      errorName: "Error",
+      notificationConfigured: true,
+    });
+
+    const logs = stringifyLogCalls(errorSpy);
+    expect(logs).not.toContain("contains customer");
+    expect(logs).not.toContain("jane.customer@example.com");
+    expect(logs).not.toContain("test-password");
   });
 
-  it("safely disables notification when SMTP configuration is incomplete", async () => {
+  it("safely disables notification and logs missing variable names only", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     delete process.env.SMTP_PASSWORD;
+    delete process.env.SMTP_HOST;
 
     const response = await POST(postRequest(validPayload()));
 
     expect(response.status).toBe(200);
     expect(await readJson(response)).toEqual({ ok: true });
     expect(sendMail).not.toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalledWith(
-      "Lead notification disabled: SMTP configuration incomplete or invalid."
-    );
+    expect(warnSpy).toHaveBeenCalledWith({
+      event: "lead_notification_disabled",
+      missingEnv: ["SMTP_HOST", "SMTP_PASSWORD"],
+      notificationConfigured: false,
+    });
+
+    const logs = stringifyLogCalls(warnSpy);
+    expect(logs).toContain("SMTP_HOST");
+    expect(logs).toContain("SMTP_PASSWORD");
+    expect(logs).not.toContain("smtp.example.test");
+    expect(logs).not.toContain("test-password");
+    expect(logs).not.toContain("jane.customer@example.com");
   });
 
   it("returns 400 and sends no email for invalid lead input", async () => {
