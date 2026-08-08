@@ -4,43 +4,37 @@ Date: 2026-08-08
 
 ## Verdict
 
-BLOCKED.
+PASS.
 
-Preview migration validation was not executed because Preview database isolation failed.
+Preview migration validation completed against the isolated Preview database only.
 
-## Intended Migration
+## Baseline Status
 
-Migration file:
+Initial Preview migration status showed all four migrations pending on the empty Preview database:
 
-`prisma/migrations/20260808120000_add_hospitality_lead_fields/migration.sql`
+- `20260225123002_slice2_leads_admin`
+- `20260225132724_slice4_proof_and_legal_identity`
+- `20260225171650_quote_intent_flow`
+- `20260808120000_add_hospitality_lead_fields`
 
-Expected migration characteristics from prior review:
+## Migration Result
 
-- additive only
-- nullable fields only
-- no destructive operation
-- no privilege widening
-- no raw dynamic SQL
-- no sensitive defaults
-- backward-compatible with existing rows
+`npx prisma migrate deploy` was run against Preview only.
 
-## Not Executed
+Result:
 
-The following were intentionally not run against Preview:
+- all four migrations applied successfully
+- hospitality migration applied
+- no destructive command was run
+- no `migrate dev`
+- no `db push`
+- no reset
+- no Production migration command
 
-- Prisma migration status inspection
-- `prisma migrate deploy`
-- post-migration status check
-- schema verification against a live Preview database
+## Status After Migration
 
-## Reason
+Post-migration status:
 
-Pass 5A requires proven isolated Preview/Staging storage before any migration or data write. The isolation check returned `PREVIEW_DB_ISOLATED=false`.
-
-## Resumption Criteria
-
-Before migration validation can resume:
-
-- Preview must point to a non-production database.
-- Isolation must be re-verified.
-- Only then may DevOps inspect migration status and run `prisma migrate deploy` against Preview.
+```text
+Database schema is up to date.
+```

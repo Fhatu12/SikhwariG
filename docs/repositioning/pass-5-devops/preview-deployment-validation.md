@@ -4,25 +4,34 @@ Date: 2026-08-08
 
 ## Verdict
 
-BLOCKED.
+PASS.
 
-No Vercel Preview deployment was created during Pass 5A because the Preview database isolation hard gate failed before deployment.
+A Vercel Preview deployment was created from the current local workspace without pushing the documentation-only commits and without deploying Production.
 
-## Deployment Status
+## Deployment
 
-| Item                   | Result                        |
-| ---------------------- | ----------------------------- |
-| Current local HEAD     | `cbc74db` at validation start |
-| Preview deployment URL | Not created                   |
-| Preview deployment ID  | Not created                   |
-| Deployment readiness   | Not evaluated                 |
-| Production deployment  | Not touched                   |
-| Production aliases     | Not modified                  |
-| Master push            | Not performed                 |
+| Item                   | Result                                                     |
+| ---------------------- | ---------------------------------------------------------- |
+| Preview deployment URL | `https://sikhwarig-cq759suhi-fhatu12s-projects.vercel.app` |
+| Preview deployment ID  | `dpl_D9fVab8yNTeAphD3PfZPR8NhvEAK`                         |
+| READY status           | READY                                                      |
+| Production deployment  | Unchanged                                                  |
+| Production aliases     | Unchanged                                                  |
+| Production deploy used | No                                                         |
 
-## Route Smoke Status
+## Build Behavior
 
-The requested Preview route smoke tests were not executed because no Preview deployment was created:
+The Preview deployment used the isolated Preview DB environment. Build logs showed:
+
+- `VERCEL_ENV=preview`
+- Prisma production migrations skipped
+- Prisma client generated before Next build
+- Next build completed
+- deployment reached READY
+
+## Route Smoke
+
+All requested Preview routes returned 200:
 
 - `/`
 - `/about`
@@ -35,10 +44,4 @@ The requested Preview route smoke tests were not executed because no Preview dep
 - `/robots.txt`
 - `/sitemap.xml`
 
-## Protected Admin Smoke Status
-
-Unauthenticated `/admin/leads` smoke testing against Preview was not executed because no Preview deployment was created.
-
-## Resumption Criteria
-
-After Preview DB isolation is corrected and re-proven, DevOps may create a Preview deployment from the current approved local state without pushing master or using `--prod`.
+Unauthenticated `/admin/leads` returned a redirect to `/admin/login?next=%2Fadmin%2Fleads`.

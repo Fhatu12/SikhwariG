@@ -2,48 +2,42 @@
 
 Date: 2026-08-08
 
-Starting HEAD: `cbc74db`
+Starting HEAD: `1465b5a`
 
 ## Verdict
 
-BLOCKED.
+PASS WITH NOTES.
 
-Required non-production database isolation is unavailable. Production release remains NOT APPROVED.
+The post-release infrastructure pass created and validated an isolated Preview database for SikhwariG. Preview isolation is closed with notes.
 
 ## Summary
 
-- Local quality gates passed.
-- Vercel project linkage was confirmed.
-- Production and Preview environments exist.
-- Required Production DB/SMTP env variable names are present.
-- Preview DB env variable name is present.
-- Preview SMTP env variable names are not present.
-- Preview and Production database identity comparison returned `PREVIEW_DB_ISOLATED=false`.
-- Migration, deployment, Preview smoke testing and synthetic lead submission were stopped by design.
+- Production remained healthy and READY.
+- Canonical Production aliases remained unchanged.
+- Cost gate classified as `FREE_RESOURCE_AVAILABLE`.
+- Free Preview Prisma Postgres resource `SikhwariG-Preview` was provisioned.
+- Preview DB environment targeting was updated for Preview only.
+- Production app DB variable was restored/confirmed for Production-only future builds.
+- Preview isolation was proven through separate resource metadata, distinct generic DB identity, empty migration baseline and Preview-only persistence verification.
+- Preview migrations applied cleanly.
+- Preview deployment reached READY.
+- Preview route smoke passed.
+- Preview admin protection passed.
+- Exactly one Preview synthetic Hospitality enquiry returned 200 and persisted with expected hospitality fields.
+- Preview SMTP remained disabled by design.
 
-## Blocker
+## Remaining Notes
 
-`BLOCKED_PREVIEW_DB_ISOLATION`
-
-Preview is not safe for migration or DB-backed E2E validation while it shares the Production database identity.
-
-## Required Next Owner
-
-Product Owner / DevOps:
-
-- provision or designate a genuinely isolated Preview/Staging PostgreSQL database
-- configure Preview env variables to use the isolated database
-- decide whether Preview SMTP should remain absent or be configured with non-Production-safe credentials
-- rerun Pass 5A from the database isolation step before any Production release approval
+- Direct Production row lookup for the Preview synthetic email was not locally available because Production pulled DB values are opaque for local Prisma usage.
+- The older Production Prisma resource still appears as project-connected in provider metadata; it was not globally disconnected because the CLI lacks environment-scoped disconnect and global disconnect could affect Production.
+- Documentation-only commits remain local unless a separate repository-sync decision is made.
 
 ## Confirmations
 
-- Master was not pushed.
-- Production was not deployed.
+- Production data was not modified.
+- Production was not redeployed.
 - Production aliases were not modified.
-- Production migrations were not run.
-- No test enquiry was submitted to Production.
-- No Preview migration was run.
-- No Preview lead record was created.
+- Production SMTP configuration was not changed.
+- No Production data was copied into Preview.
 - `npm-audit.json` and `npm-audit.after.json` were not touched.
 - No secret values, database URLs, SMTP credentials, tokens, customer records or real enquiry content are included in this evidence.

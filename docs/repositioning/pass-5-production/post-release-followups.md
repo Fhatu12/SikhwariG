@@ -6,14 +6,12 @@ These items are not silent release scope expansions. They remain post-release fo
 
 ## Priority
 
-1. Provision an isolated Preview/Staging database and re-run Preview validation.
-2. Decide Preview SMTP posture.
-3. Confirm mailbox receipt for the synthetic Production release enquiry.
-4. Perform a direct one-record persistence check through an approved admin/DB access path if stricter evidence is required.
+1. Confirm mailbox receipt for the synthetic Production release enquiry.
+2. Decide whether Preview SMTP should remain disabled or receive non-Production-safe test credentials later.
+3. Perform a direct Production one-record non-contamination check through an approved admin/DB access path if stricter evidence is required.
 
 ## Existing Follow-Ups
 
-- isolated Preview database
 - Preview SMTP posture
 - privacy/legal wording
 - legal page H1 structure
@@ -30,4 +28,4 @@ These items are not silent release scope expansions. They remain post-release fo
 
 - Vercel build cache can preserve stale generated Prisma client output. Production build wrapper now explicitly runs Prisma client generation before Next build.
 - The hospitality migration is additive and nullable, so application rollback should leave added columns in place.
-- Preview database isolation is still open and must not be treated as resolved by this Production release.
+- Preview database isolation was closed in the post-release DevOps infrastructure pass by provisioning and validating `SikhwariG-Preview`.

@@ -4,44 +4,35 @@ Date: 2026-08-08
 
 ## Verdict
 
-BLOCKED_PREVIEW_DB_ISOLATION.
+PASS WITH NOTES.
 
-Safe comparison of Preview and Production database identities concluded:
+The original Preview/Production shared database issue was corrected by provisioning a new Preview Prisma Postgres resource and retargeting Preview database environment variables.
+
+## Safe Isolation Evidence
+
+Safe metadata and local comparisons showed:
+
+- Existing Production Prisma resource remains the Production database resource.
+- New Preview resource `SikhwariG-Preview` is separate from the existing Production resource.
+- Preview generic database URL and Production generic database URL compare as distinct.
+- Preview schema started empty, with all four migrations pending before Preview migration deployment.
+- Preview-only synthetic lead was found exactly once in the Preview database after E2E.
+
+Safe result:
 
 ```text
-PREVIEW_DB_PRESENT=true
-PRODUCTION_DB_PRESENT=true
-PREVIEW_DB_ISOLATED=false
+PREVIEW_DB_ISOLATED=true
 ```
 
 ## Method
 
-- Vercel environment-variable names and targets were inspected without recording values.
-- Because metadata showed the Prisma database URL variable targeted to both Preview and Production, metadata alone was insufficient to prove isolation.
-- Temporary permission-restricted local env pulls were used only to compare database identity.
-- Connection strings were not printed, stored in tracked files, included in documentation or included in summary output.
-- Temporary files containing pulled env values were deleted immediately after comparison.
+- Vercel integration resources and environment-variable targets were inspected without recording values.
+- Temporary permission-restricted env pulls were used for equality checks and migration/E2E verification.
+- Connection strings were not printed, committed or documented.
+- Temporary files containing pulled env values were deleted immediately after use.
 
-## Finding
+## Limitations
 
-Preview and Production resolved to the same database identity for `PRISMA_POSTGRES_DATABASE_URL`.
+Vercel `env pull` returns the app-specific sensitive `PRISMA_POSTGRES_DATABASE_URL` as opaque secret material, so direct value comparison for that sensitive alias was not usable. Isolation was proven through separate resource identity, distinct generic database values, empty Preview migration baseline and Preview-only persistence verification.
 
-This violates the Pass 5A hard gate requiring an isolated non-production database before migration or synthetic DB-backed enquiry validation.
-
-## Stop Condition Applied
-
-Because `PREVIEW_DB_ISOLATED=false`:
-
-- no Preview migration was run
-- no Preview deployment was created
-- no route smoke tests were run against a new Preview deployment
-- no synthetic enquiry was submitted
-- no database rows were inspected or written
-- no new external database was created automatically
-- Production remained untouched
-
-## Required Decision
-
-Product Owner / DevOps must provision or designate a genuinely isolated Preview/Staging PostgreSQL database and configure Preview to use it before Pass 5A can continue.
-
-The new database must not be shared with Production and must be validated again before any migration or E2E lead test.
+Direct Production row lookup for the Preview synthetic email was not available locally because Production pulled database values are opaque for local Prisma usage. Production contamination is therefore assessed from separate resource targeting plus Preview-only persistence, not from a direct Production row query.

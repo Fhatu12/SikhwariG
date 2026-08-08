@@ -4,39 +4,53 @@ Date: 2026-08-08
 
 ## Verdict
 
-BLOCKED.
+PASS WITH NOTES.
 
-The real Preview database-backed Hospitality enquiry was not submitted because the isolated Preview database hard gate failed.
+Exactly one synthetic Hospitality enquiry was submitted to the READY Preview deployment and persisted in the isolated Preview database.
 
-## Intended Test
+## API Result
 
-The intended test was exactly one synthetic valid Hospitality enquiry against a READY Preview deployment, using only fictional values and expecting:
+- Target: Preview deployment
+- Submission count: exactly one successful synthetic lead
+- HTTP result: 200
+- Response shape: `{"ok":true}`
 
-```json
-{ "ok": true }
-```
+The full synthetic payload is not recorded in evidence.
 
-## Not Executed
+## Persistence Verification
 
-The following were intentionally not performed:
+A bounded Preview database query inspected only the matching synthetic email.
 
-- synthetic Hospitality API submission
-- Preview database persistence confirmation
-- hospitality field persistence verification
-- database row lookup
-- SMTP exercise through Preview
-- runtime log review for a Preview test invocation
+Result:
 
-## Existing Non-Hospitality Evidence
+- matching Preview record count: 1
+- service area stored as Hospitality: yes
+- hospitality service type stored as Catering: yes
+- event date stored correctly: yes
+- event location stored correctly: yes
+- estimated guest count stored correctly: yes
 
-Existing automated tests remain the evidence for stale non-Hospitality data normalization:
+No unrelated records were enumerated.
 
-- Hospitality-only values are ignored for non-Hospitality submissions.
-- Non-Hospitality persistence maps hospitality fields to `null`.
-- Non-Hospitality notification content omits stale hospitality-only values.
+## Production Contamination
 
-No second successful persisted Preview lead was created.
+Direct Production row lookup for the Preview synthetic email was not available locally because Production pulled database values are opaque for local Prisma usage.
 
-## Resumption Criteria
+Production contamination risk is mitigated by:
 
-After isolated Preview DB provisioning and migration validation, run exactly one synthetic Hospitality enquiry and verify only the matching synthetic record and hospitality fields.
+- separate Preview Prisma resource
+- distinct Preview and Production generic database values
+- Preview-only environment targeting
+- successful Preview-only persistence check
+- Production deployment and aliases remained unchanged
+
+## SMTP Posture
+
+Preview SMTP remains intentionally disabled. Production SMTP was already validated in the Production release.
+
+Preview logs showed the expected safe event:
+
+- `lead_notification_disabled`
+- missing SMTP variable names only
+- no SMTP credentials
+- no enquiry content
