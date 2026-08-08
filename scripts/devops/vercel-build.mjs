@@ -38,4 +38,7 @@ if (isProduction) {
   console.log(`Skipping Prisma migrations for VERCEL_ENV=${process.env.VERCEL_ENV ?? "unset"}.`);
 }
 
+console.log("Generating Prisma client.");
+await run("npx", ["prisma", "generate"]);
+
 await run("npm", ["run", "build"]);
