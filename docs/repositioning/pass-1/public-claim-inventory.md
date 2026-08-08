@@ -1,0 +1,36 @@
+# Public Claim Inventory
+
+Status definitions: supported means directly supported by repository evidence. Provisionally supported means plausible in code but source evidence is incomplete. Unsupported means not evidenced in the repository. Prohibited means blocked by the approved handoff. Requires approval means business approval is needed before publication. Requires legal review means legal wording should be checked before publication. Requires source document means a certificate, registration record, contract or other document is needed.
+
+| Claim or faithful extract | Route/file | Category | Current repo evidence | Status | Publication risk | Recommended action |
+| --- | --- | --- | --- | --- | --- | --- |
+| Sikhwari Group (Pty) Ltd delivers practical support across telecommunications, cybersecurity and software development. | `/`, `app/page.tsx` | Service scope | Visible copy and metadata | Provisionally supported | Medium: omits hospitality | Update in Pass 2 to include approved public service structure |
+| Telecommunications, cybersecurity and software development under one accountable legal entity. | `/`, `app/page.tsx` | Legal identity and service scope | Legal identity block and route copy | Provisionally supported | Medium: incomplete approved scope | Reposition to include hospitality and two approved public groups |
+| South Africa-based delivery and support. | `/`, `app/page.tsx` | Geographic delivery | Contact address and South African legal context | Provisionally supported | Low to medium | Keep if company approves geographic wording |
+| Enquiries handled with appropriate safeguards and POPIA awareness. | `/`, `/contact`, `app/api/leads/route.ts` | Privacy/security | Form safeguards and privacy page | Provisionally supported | Medium | Keep after privacy wording is tightened |
+| Cybersecurity work is provided on an authorised basis. | `/`, `app/page.tsx`; `lib/service-content.ts` | Cybersecurity compliance | Authorised-engagement wording in service seed | Supported | Low | Preserve authorisation caveat |
+| Telecommunications, ICT and Network Services capability bullets. | `/services`, `lib/service-content.ts` | Service capability | Seed content | Provisionally supported | Medium | Director/company approval before expansion |
+| Cybersecurity advisory, assessment and support subject to law and client authorisation. | `/services`, `lib/service-content.ts` | Service capability | Seed content | Supported | Low | Preserve cautious wording |
+| Culinary and Hospitality Services capability bullets. | `/services`, `lib/service-content.ts` | Service capability | Seed content | Provisionally supported | Medium | Connect to homepage/footer after approval |
+| Software Development and Digital Services capability bullets. | `/services`, `lib/service-content.ts` | Service capability | Seed content and Mzansi Select copy | Provisionally supported | Medium | Keep factual; avoid broad certification claims |
+| All service lines are divisions of a single legal entity, not separate companies. | Footer, `lib/legal-identity.ts` | Legal identity | Shared legal identity source | Supported | Low | Preserve |
+| Registration number is publicly displayed. | Footer/contact via `lib/legal-identity.ts` | Legal identity | Shared legal identity source | Requires legal review | Medium | Confirm registration record and display approval |
+| Registered address is publicly displayed. | `/contact`, footer | Company information | Shared legal identity source | Requires approval | Medium | Decide whether to keep public |
+| Fhatuwani Sikhwari brings experience across telecommunications, project delivery, digital services and cybersecurity. | `/about`, `app/about/page.tsx` | Leadership experience | Visible profile copy only | Requires approval | Medium | Approve or source supporting profile/CV |
+| Fhatuwani Sikhwari title: Director, Telecommunications, ICT and Network Services. | `/about` | Leadership title | Visible copy | Requires approval | Medium: narrower than approved title | Replace in Pass 2 with approved working title |
+| Tendani Sikhwari title: Director, Culinary and Hospitality Services. | `/about` | Leadership title | Visible copy | Requires approval | Medium: narrower than approved title | Replace in Pass 2 with approved working title |
+| Tendani Sikhwari leads catering and hospitality delivery with food safety discipline. | `/about` | Leadership/service capability | Visible copy only | Requires approval | Medium | Source or approve before expansion |
+| Mzansi Select: Shopify storefront setup, theme refinement, product and collection structure, launch-readiness fixes and live-site polish. | `/about` | Selected Work | Visible copy only | Requires source document | Medium | Publish only after approval and source evidence |
+| Selected certifications, partnerships, memberships and recognised achievements. | `/`, `/about`, `components/proof/proof-section.tsx` | Proof/credentials | Component labels; database-driven items | Requires source document | High if active proof items lack evidence | Require source documents for each proof item |
+| Privacy rights under POPIA: access, correction, objection, restriction or deletion where applicable. | `/legal/privacy` | Legal/privacy | Privacy page text | Requires legal review | Medium | Legal review before substantive rewrite |
+| Default retention period is 24 months from last meaningful contact. | `/legal/privacy` | Legal/privacy | Privacy page text | Requires legal review | Medium | Confirm operational retention practice |
+| Website is general business information and not a contractual offer. | `/legal/terms` | Legal | Terms page | Requires legal review | Low to medium | Preserve pending legal review |
+| No legal, financial, tax or investment advice. | `/legal/disclaimer` | Legal/trading | Disclaimer page | Supported | Low | Preserve |
+| Proprietary trading is internal capital allocation only; company-owned funds only; no public solicitation; no third-party or client funds managed. | `/legal/disclaimer` | Prohibited-service boundary | Trading disclaimer block | Supported | Low if unchanged | Preserve exactly in substance |
+| Professional services across telecommunications, cybersecurity and software development. | Footer | Positioning | Footer copy | Provisionally supported | Medium: hospitality omitted | Update in Pass 2 |
+| Built by SG Digital, a division of Sikhwari Group. | Footer | Internal division and selected work | Footer copy only | Requires approval | Medium | Decide whether the corporate site is an approved Selected Work item |
+| Advisory, cybersecurity and internal operations support. | Global metadata, `app/layout.tsx` | Positioning | Metadata only | Requires approval | Medium: not aligned to approved areas | Update metadata in Pass 2 |
+
+## Claims Not Found Publicly
+
+Repository search did not find public claims for B-BBEE Level 1, 100% black ownership, 50% black female ownership, CSD compliance, tax compliance, government approval/preference, licensed network operator, internet-service provider, spectrum licence holder, accredited cybersecurity provider, certified software-development company, investment manager or financial-services provider.
