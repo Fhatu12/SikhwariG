@@ -100,6 +100,28 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
                 <dd className="text-slate-900">{selectedLead.serviceArea || "Not provided"}</dd>
               </div>
               <div>
+                <dt className="font-medium text-slate-700">Hospitality service type</dt>
+                <dd className="text-slate-900">
+                  {selectedLead.hospitalityServiceType || "Not provided"}
+                </dd>
+              </div>
+              <div>
+                <dt className="font-medium text-slate-700">Event date</dt>
+                <dd className="text-slate-900">
+                  {selectedLead.eventDate ? formatDate(selectedLead.eventDate) : "Not provided"}
+                </dd>
+              </div>
+              <div>
+                <dt className="font-medium text-slate-700">Event location</dt>
+                <dd className="text-slate-900">{selectedLead.eventLocation || "Not provided"}</dd>
+              </div>
+              <div>
+                <dt className="font-medium text-slate-700">Estimated guest count</dt>
+                <dd className="text-slate-900">
+                  {selectedLead.estimatedGuestCount || "Not provided"}
+                </dd>
+              </div>
+              <div>
                 <dt className="font-medium text-slate-700">Submitted</dt>
                 <dd className="text-slate-900">{formatDate(selectedLead.createdAt)}</dd>
               </div>

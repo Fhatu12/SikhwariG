@@ -14,6 +14,10 @@ type LeadNotification = {
   company: string | null;
   intent: string;
   serviceArea: string | null;
+  hospitalityServiceType: string | null;
+  eventDate: Date | null;
+  eventLocation: string | null;
+  estimatedGuestCount: number | null;
   message: string;
 };
 
@@ -199,6 +203,22 @@ export function buildLeadNotificationMessage(lead: LeadNotification) {
     textLines.push(line("Service area", lead.serviceArea));
   }
 
+  if (lead.hospitalityServiceType) {
+    textLines.push(line("Hospitality service type", lead.hospitalityServiceType));
+  }
+
+  if (lead.eventDate) {
+    textLines.push(line("Event date", lead.eventDate.toISOString().slice(0, 10)));
+  }
+
+  if (lead.eventLocation) {
+    textLines.push(line("Event location", lead.eventLocation));
+  }
+
+  if (lead.estimatedGuestCount) {
+    textLines.push(line("Estimated guest count", lead.estimatedGuestCount));
+  }
+
   textLines.push(
     "",
     "Customer message:",
@@ -216,6 +236,14 @@ export function buildLeadNotificationMessage(lead: LeadNotification) {
     ...(lead.company ? [["Company", lead.company]] : []),
     ["Enquiry type", lead.intent],
     ...(lead.serviceArea ? [["Service area", lead.serviceArea]] : []),
+    ...(lead.hospitalityServiceType
+      ? [["Hospitality service type", lead.hospitalityServiceType]]
+      : []),
+    ...(lead.eventDate ? [["Event date", lead.eventDate.toISOString().slice(0, 10)]] : []),
+    ...(lead.eventLocation ? [["Event location", lead.eventLocation]] : []),
+    ...(lead.estimatedGuestCount
+      ? [["Estimated guest count", String(lead.estimatedGuestCount)]]
+      : []),
   ]
     .map(([label, value]) => `<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</p>`)
     .join("");

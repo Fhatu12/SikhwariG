@@ -59,6 +59,25 @@ function validPayload(overrides: Record<string, unknown> = {}) {
   };
 }
 
+function notificationLead(overrides: Record<string, unknown> = {}) {
+  return {
+    leadId: 42,
+    submittedAt: new Date("2026-07-26T08:30:00.000Z"),
+    name: "Jane Customer",
+    email: "jane.customer@example.com",
+    phone: "+27110000000",
+    company: "Customer Holdings",
+    intent: "Request a quote",
+    serviceArea: "Software Development and Digital Services",
+    hospitalityServiceType: null,
+    eventDate: null,
+    eventLocation: null,
+    estimatedGuestCount: null,
+    message: "Please help with a portal build.",
+    ...overrides,
+  };
+}
+
 function postRequest(payload: Record<string, unknown>) {
   return new Request("https://example.test/api/leads", {
     method: "POST",
@@ -77,17 +96,7 @@ function stringifyLogCalls(mock: ReturnType<typeof vi.fn>) {
 
 describe("lead notification content", () => {
   it("includes all supplied enquiry fields", () => {
-    const message = buildLeadNotificationMessage({
-      leadId: 42,
-      submittedAt: new Date("2026-07-26T08:30:00.000Z"),
-      name: "Jane Customer",
-      email: "jane.customer@example.com",
-      phone: "+27110000000",
-      company: "Customer Holdings",
-      intent: "Request a quote",
-      serviceArea: "Software Development and Digital Services",
-      message: "Please help with a portal build.",
-    });
+    const message = buildLeadNotificationMessage(notificationLead());
 
     expect(message.text).toContain("Lead reference ID: 42");
     expect(message.text).toContain("Submitted at: 2026-07-26T08:30:00.000Z");
@@ -102,40 +111,58 @@ describe("lead notification content", () => {
   });
 
   it("handles optional fields cleanly", () => {
-    const message = buildLeadNotificationMessage({
-      leadId: 43,
-      submittedAt: new Date("2026-07-26T08:30:00.000Z"),
-      name: "Jane Customer",
-      email: "jane.customer@example.com",
-      phone: null,
-      company: null,
-      intent: "General enquiry",
-      serviceArea: null,
-      message: "Hello",
-    });
+    const message = buildLeadNotificationMessage(
+      notificationLead({
+        leadId: 43,
+        phone: null,
+        company: null,
+        intent: "General enquiry",
+        serviceArea: null,
+        message: "Hello",
+      })
+    );
 
     expect(message.text).not.toContain("Customer phone:");
     expect(message.text).not.toContain("Company:");
     expect(message.text).not.toContain("Service area:");
+    expect(message.text).not.toContain("Hospitality service type:");
   });
 
   it("escapes HTML user content", () => {
-    const message = buildLeadNotificationMessage({
-      leadId: 44,
-      submittedAt: new Date("2026-07-26T08:30:00.000Z"),
-      name: "<Jane>",
-      email: "jane.customer@example.com",
-      phone: null,
-      company: "A&B",
-      intent: "Request a quote",
-      serviceArea: null,
-      message: "<script>alert('x')</script>",
-    });
+    const message = buildLeadNotificationMessage(
+      notificationLead({
+        leadId: 44,
+        name: "<Jane>",
+        phone: null,
+        company: "A&B",
+        serviceArea: null,
+        message: "<script>alert('x')</script>",
+      })
+    );
 
     expect(message.html).toContain("&lt;Jane&gt;");
     expect(message.html).toContain("A&amp;B");
     expect(message.html).toContain("&lt;script&gt;alert(&#39;x&#39;)&lt;/script&gt;");
     expect(message.html).not.toContain("<script>");
+  });
+
+  it("includes hospitality fields when supplied", () => {
+    const message = buildLeadNotificationMessage(
+      notificationLead({
+        serviceArea: "Culinary and Hospitality Services",
+        hospitalityServiceType: "Corporate Function",
+        eventDate: new Date("2026-09-12T00:00:00.000Z"),
+        eventLocation: "Centurion",
+        estimatedGuestCount: 80,
+        message: "Please assist with a corporate function.",
+      })
+    );
+
+    expect(message.text).toContain("Hospitality service type: Corporate Function");
+    expect(message.text).toContain("Event date: 2026-09-12");
+    expect(message.text).toContain("Event location: Centurion");
+    expect(message.text).toContain("Estimated guest count: 80");
+    expect(message.html).toContain("Hospitality service type");
   });
 });
 
@@ -152,6 +179,10 @@ describe("POST /api/leads notifications", () => {
       phone: "+27110000000",
       intent: "Request a quote",
       serviceArea: "Software Development and Digital Services",
+      hospitalityServiceType: null,
+      eventDate: null,
+      eventLocation: null,
+      estimatedGuestCount: null,
       message: "Please help with a portal build.",
       createdAt: new Date("2026-07-26T08:30:00.000Z"),
       ipAddress: "127.0.0.1",
@@ -199,6 +230,79 @@ describe("POST /api/leads notifications", () => {
       },
     });
     expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it("persists and notifies hospitality-specific fields for hospitality leads", async () => {
+    const response = await POST(
+      postRequest(
+        validPayload({
+          serviceArea: "Culinary and Hospitality Services",
+          hospitalityServiceType: "Catering",
+          eventDate: "2026-09-12",
+          eventLocation: "Johannesburg",
+          estimatedGuestCount: "45",
+          message: "Please help with catering.",
+        })
+      )
+    );
+
+    expect(response.status).toBe(200);
+    expect(prisma.lead.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          serviceArea: "Culinary and Hospitality Services",
+          hospitalityServiceType: "Catering",
+          eventDate: new Date("2026-09-12T00:00:00.000Z"),
+          eventLocation: "Johannesburg",
+          estimatedGuestCount: 45,
+        }),
+      })
+    );
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it("normalises stale hospitality fields for non-hospitality leads", async () => {
+    const response = await POST(
+      postRequest(
+        validPayload({
+          serviceArea: "Software Development and Digital Services",
+          hospitalityServiceType: "Catering",
+          eventDate: "2026-09-12",
+          eventLocation: "Johannesburg",
+          estimatedGuestCount: "45",
+        })
+      )
+    );
+
+    expect(response.status).toBe(200);
+    expect(prisma.lead.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          serviceArea: "Software Development and Digital Services",
+          hospitalityServiceType: null,
+          eventDate: null,
+          eventLocation: null,
+          estimatedGuestCount: null,
+        }),
+      })
+    );
+  });
+
+  it("rejects invalid hospitality fields", async () => {
+    const response = await POST(
+      postRequest(
+        validPayload({
+          serviceArea: "Culinary and Hospitality Services",
+          hospitalityServiceType: "Unsupported",
+          eventDate: "not-a-date",
+          estimatedGuestCount: "-5",
+        })
+      )
+    );
+
+    expect(response.status).toBe(400);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
+    expect(sendMail).not.toHaveBeenCalled();
   });
 
   it("logs safe accepted and rejected counts after sendMail completes", async () => {

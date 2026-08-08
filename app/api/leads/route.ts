@@ -2,6 +2,13 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { sendLeadNotification } from "@/lib/email/lead-notification";
+import {
+  SERVICE_AREA_OPTIONS,
+  isContactIntent,
+  isHospitalityServiceArea,
+  isHospitalityServiceType,
+  isServiceAreaOption,
+} from "@/lib/lead-options";
 import { prisma } from "@/lib/prisma";
 import { checkLeadSubmissionRateLimit } from "@/lib/rate-limit";
 
@@ -11,17 +18,12 @@ const MAX_PHONE_LENGTH = 30;
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_COMPANY_LENGTH = 120;
 const MAX_SERVICE_AREA_LENGTH = 80;
+const MAX_EVENT_LOCATION_LENGTH = 160;
 const MAX_SOURCE_PATH_LENGTH = 200;
 const MAX_USER_AGENT_LENGTH = 512;
 const MAX_IP_LENGTH = 64;
 const MIN_FORM_SUBMIT_TIME_MS = 3000;
-const ALLOWED_INTENTS = new Set(["Request a quote", "Book consultation", "General enquiry"]);
-const ALLOWED_SERVICE_AREAS = new Set([
-  "Telecommunications, ICT, and Network Services",
-  "Cybersecurity Services",
-  "Culinary and Hospitality Services",
-  "Software Development and Digital Services",
-]);
+const ALLOWED_SERVICE_AREAS = new Set<string>(SERVICE_AREA_OPTIONS);
 
 type LeadPayload = {
   name?: unknown;
@@ -30,6 +32,10 @@ type LeadPayload = {
   company?: unknown;
   intent?: unknown;
   serviceArea?: unknown;
+  hospitalityServiceType?: unknown;
+  eventDate?: unknown;
+  eventLocation?: unknown;
+  estimatedGuestCount?: unknown;
   message?: unknown;
   companyWebsite?: unknown;
   website?: unknown;
@@ -39,6 +45,36 @@ type LeadPayload = {
 
 function asTrimmedString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function parseEventDate(value: string) {
+  if (!value) {
+    return { date: null, valid: true };
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return { date: null, valid: false };
+  }
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) {
+    return { date: null, valid: false };
+  }
+
+  return { date, valid: true };
+}
+
+function parseGuestCount(value: string) {
+  if (!value) {
+    return { guestCount: null, valid: true };
+  }
+
+  const guestCount = Number(value);
+  if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 100000) {
+    return { guestCount: null, valid: false };
+  }
+
+  return { guestCount, valid: true };
 }
 
 function isLikelySpamMessage(message: string) {
@@ -78,6 +114,10 @@ export async function POST(request: Request) {
   const company = asTrimmedString(payload.company);
   const intent = asTrimmedString(payload.intent);
   const serviceArea = asTrimmedString(payload.serviceArea);
+  const hospitalityServiceType = asTrimmedString(payload.hospitalityServiceType);
+  const eventDateInput = asTrimmedString(payload.eventDate);
+  const eventLocation = asTrimmedString(payload.eventLocation);
+  const estimatedGuestCountInput = asTrimmedString(payload.estimatedGuestCount);
   const message = asTrimmedString(payload.message);
   const honeypot = asTrimmedString(payload.companyWebsite ?? payload.website);
   const formStartedAtRaw = Number(payload.formStartedAt);
@@ -132,7 +172,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!ALLOWED_INTENTS.has(intent)) {
+  if (!isContactIntent(intent)) {
     return NextResponse.json({ error: "Please select a valid reason." }, { status: 400 });
   }
 
@@ -143,8 +183,52 @@ export async function POST(request: Request) {
     );
   }
 
-  if (serviceArea && !ALLOWED_SERVICE_AREAS.has(serviceArea)) {
+  if (
+    !serviceArea ||
+    !isServiceAreaOption(serviceArea) ||
+    !ALLOWED_SERVICE_AREAS.has(serviceArea)
+  ) {
     return NextResponse.json({ error: "Please select a valid service area." }, { status: 400 });
+  }
+
+  const isHospitality = isHospitalityServiceArea(serviceArea);
+  let eventDate: Date | null = null;
+  let estimatedGuestCount: number | null = null;
+  let normalizedHospitalityServiceType: string | null = null;
+  let normalizedEventLocation: string | null = null;
+
+  if (isHospitality) {
+    if (!hospitalityServiceType || !isHospitalityServiceType(hospitalityServiceType)) {
+      return NextResponse.json(
+        { error: "Please select a valid hospitality service type." },
+        { status: 400 }
+      );
+    }
+
+    const parsedEventDate = parseEventDate(eventDateInput);
+    if (!parsedEventDate.valid) {
+      return NextResponse.json({ error: "Please provide a valid event date." }, { status: 400 });
+    }
+
+    if (eventLocation.length > MAX_EVENT_LOCATION_LENGTH) {
+      return NextResponse.json(
+        { error: "Event location must be 160 characters or fewer." },
+        { status: 400 }
+      );
+    }
+
+    const parsedGuestCount = parseGuestCount(estimatedGuestCountInput);
+    if (!parsedGuestCount.valid) {
+      return NextResponse.json(
+        { error: "Estimated guest count must be a positive number." },
+        { status: 400 }
+      );
+    }
+
+    normalizedHospitalityServiceType = hospitalityServiceType;
+    eventDate = parsedEventDate.date;
+    normalizedEventLocation = eventLocation || null;
+    estimatedGuestCount = parsedGuestCount.guestCount;
   }
 
   if (!message || message.length > MAX_MESSAGE_LENGTH) {
@@ -176,7 +260,11 @@ export async function POST(request: Request) {
         email,
         phone: phone || null,
         intent,
-        serviceArea: serviceArea || null,
+        serviceArea,
+        hospitalityServiceType: normalizedHospitalityServiceType,
+        eventDate,
+        eventLocation: normalizedEventLocation,
+        estimatedGuestCount,
         message,
         ipAddress: ipAddress || null,
         userAgent: userAgent || null,
@@ -193,6 +281,10 @@ export async function POST(request: Request) {
       company: company || null,
       intent,
       serviceArea: serviceArea || null,
+      hospitalityServiceType: normalizedHospitalityServiceType,
+      eventDate,
+      eventLocation: normalizedEventLocation,
+      estimatedGuestCount,
       message,
     });
   } catch (error) {
