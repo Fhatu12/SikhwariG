@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { ProofSection } from "@/components/proof/proof-section";
+import { SelectedWorkSection } from "@/components/work/selected-work-section";
 import { getActiveProofItems } from "@/lib/proof-content";
+import { CREDIBILITY_FACTS, PORTFOLIOS, PUBLIC_SERVICES } from "@/lib/public-content";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   title: "Home",
   description:
-    "Sikhwari Group (Pty) Ltd delivers practical support across telecommunications, cybersecurity, and software development services.",
+    "Sikhwari Group (Pty) Ltd delivers telecommunications, cybersecurity, software, digital and hospitality services under one accountable South African company.",
   path: "/",
 });
 
@@ -26,25 +28,17 @@ export default async function Home() {
               SIKHWARI GROUP (Pty) Ltd
             </p>
             <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-              Telecommunications, cybersecurity, and software development services under one
-              accountable legal entity.
+              Technology, telecommunications, cybersecurity, digital and hospitality services under
+              one accountable South African company.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Sikhwari Group (Pty) Ltd supports organisations through three focused service areas:
-              Telecommunications, ICT, and Network Services; Cybersecurity Services; and Software
-              Development and Digital Services. We deliver practical, accountable support for
-              connectivity, security, and digital execution.
+              Sikhwari Group (Pty) Ltd delivers practical services through specialist internal
+              divisions covering telecommunications and ICT, cybersecurity, software and digital
+              delivery, and culinary and hospitality operations. Every engagement is managed under
+              one registered legal entity with clear accountability, documented scope and
+              disciplined execution.
             </p>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)]">
-            <h2 className="text-base font-semibold text-slate-900">Quick facts</h2>
-            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
-              <li>South Africa-based delivery and support.</li>
-              <li>Professional service lines under one accountable legal entity.</li>
-              <li>Enquiries handled with appropriate safeguards and POPIA awareness.</li>
-              <li>Cybersecurity work is provided on an authorised basis.</li>
-            </ul>
-            <div className="mt-4 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 className="rounded-[var(--radius-sm)] bg-[var(--color-brand-700)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-600)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-600)] focus-visible:ring-offset-2"
                 href="/contact?intent=quote"
@@ -53,39 +47,73 @@ export default async function Home() {
               </Link>
               <Link
                 className="rounded-[var(--radius-sm)] border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-600)] focus-visible:ring-offset-2"
-                href="/contact"
+                href="/services"
               >
-                Contact
+                View our services
               </Link>
             </div>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)]">
+            <h2 className="text-base font-semibold text-slate-900">Credibility facts</h2>
+            <ul className="mt-3 grid gap-2 text-sm text-slate-700 sm:grid-cols-2 lg:grid-cols-1">
+              {CREDIBILITY_FACTS.map((fact) => (
+                <li key={fact} className="rounded-[var(--radius-sm)] bg-slate-50 px-3 py-2">
+                  {fact}
+                </li>
+              ))}
+            </ul>
           </div>
         </Container>
       </section>
 
       <Section
-        title="Focused service areas"
-        description="Our work is structured into clear service categories while remaining under a single legal company."
+        title="Two public portfolios"
+        description="The divisions work under one company structure while giving clients a clear way to understand where each service fits."
       >
-        <div className="grid gap-4 sm:grid-cols-3">
-          {[
-            {
-              title: "Telecommunications, ICT, and Network Services",
-              body: "We support organisations with telecommunications, ICT, and network services that improve connectivity, reliability, and day-to-day operational continuity. Our focus is practical delivery for environments that depend on stable communications and well-managed infrastructure.",
-            },
-            {
-              title: "Cybersecurity Services",
-              body: "We help organisations strengthen their security posture through practical cybersecurity support, risk-aware guidance, and accountable execution. Our approach focuses on improving resilience, reducing exposure, and supporting safer business operations.",
-            },
-            {
-              title: "Software Development and Digital Services",
-              body: "We build and support digital solutions that help organisations improve workflows, strengthen service delivery, and move ideas into working systems. Our focus is practical software and digital delivery aligned to real business needs.",
-            },
-          ].map((item) => (
-            <article key={item.title} className="h-full rounded-xl border border-slate-200 bg-white p-5">
-              <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                {item.body}
+        <div className="grid gap-4 md:grid-cols-2">
+          {PORTFOLIOS.map((portfolio) => (
+            <article
+              key={portfolio.title}
+              className="rounded-xl border border-slate-200 bg-white p-5"
+            >
+              <h3 className="text-lg font-semibold text-slate-900">{portfolio.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{portfolio.description}</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {portfolio.divisions.map((division) => (
+                  <li
+                    key={division}
+                    className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700"
+                  >
+                    {division}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Focused service areas"
+        description="Four public service areas are delivered through specialist internal divisions under one accountable legal entity."
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {PUBLIC_SERVICES.map((service) => (
+            <article
+              key={service.key}
+              className="h-full rounded-xl border border-slate-200 bg-white p-5"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-700)]">
+                {service.division}
               </p>
+              <h3 className="mt-2 text-lg font-semibold text-slate-900">{service.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{service.summary}</p>
+              <Link
+                className="mt-4 inline-block text-link focus-ring text-sm font-medium"
+                href={service.href}
+              >
+                View {service.division}
+              </Link>
             </article>
           ))}
         </div>
@@ -96,6 +124,34 @@ export default async function Home() {
           >
             View all services
           </Link>
+        </div>
+      </Section>
+
+      <Section
+        title="Selected Work"
+        description="Approved examples of practical digital, software and cybersecurity capability, shown without invented metrics, endorsements or confidential details."
+      >
+        <SelectedWorkSection compact />
+      </Section>
+
+      <Section
+        title="Accountable delivery"
+        description="Every enquiry is handled under Sikhwari Group (Pty) Ltd with clear scope, disciplined execution and the right internal division for the work."
+      >
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-[var(--shadow-soft)]">
+          <div className="grid gap-4 text-sm leading-6 text-slate-700 md:grid-cols-3">
+            <p>One registered South African private company is accountable for engagements.</p>
+            <p>Service areas are public-facing divisions, not separate legal entities.</p>
+            <p>Cybersecurity work is performed only with authorisation and agreed scope.</p>
+          </div>
+          <div className="mt-5">
+            <Link
+              className="rounded-[var(--radius-sm)] bg-[var(--color-brand-700)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-600)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-600)] focus-visible:ring-offset-2"
+              href="/contact?intent=quote"
+            >
+              Request a quote
+            </Link>
+          </div>
         </div>
       </Section>
 

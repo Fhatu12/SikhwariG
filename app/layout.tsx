@@ -22,11 +22,11 @@ export const metadata: Metadata = {
     template: "%s | Sikhwari Group (Pty) Ltd",
   },
   description:
-    "Sikhwari Group (Pty) Ltd provides professional services across advisory, cybersecurity, and internal operations support.",
+    "Sikhwari Group (Pty) Ltd provides telecommunications, cybersecurity, software, digital and hospitality services under one accountable South African company.",
   openGraph: {
     title: "Sikhwari Group (Pty) Ltd",
     description:
-      "A professional services group focused on practical delivery, governance, and disciplined operations.",
+      "A South African services company focused on practical delivery across technology, telecommunications, cybersecurity, digital services and hospitality.",
     type: "website",
     locale: "en_ZA",
     siteName: "Sikhwari Group (Pty) Ltd",
@@ -42,8 +42,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${manrope.variable} ${lora.variable} antialiased`}>
         <div className="flex min-h-screen flex-col">
+          <a
+            className="focus-ring sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--color-brand-700)] focus:shadow-[var(--shadow-soft)]"
+            href="#main-content"
+          >
+            Skip to main content
+          </a>
           <SiteHeader />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" className="flex-1">
+            {children}
+          </main>
           <SiteFooter />
         </div>
       </body>

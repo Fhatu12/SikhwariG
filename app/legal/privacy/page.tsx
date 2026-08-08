@@ -33,7 +33,8 @@ export default function PrivacyPage() {
           <p>
             In line with POPIA principles, data subjects may request access, correction, objection,
             restriction, or deletion where applicable. Rights requests can be submitted via the
-            contact page and will be handled by the company representative.
+            contact page or by emailing info@sikhwarigroup.co.za and will be handled by the company
+            representative.
           </p>
           <p>
             We apply appropriate safeguards including controlled access, encrypted transport
