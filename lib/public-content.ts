@@ -6,8 +6,6 @@ export const CREDIBILITY_FACTS = [
   "South African private company",
   "Registration number: 2026/166219/07",
   "B-BBEE Level 1 Contributor",
-  "100% black ownership",
-  "50% black female ownership",
   "South Africa-based delivery",
   "Four external service areas",
   "One accountable legal entity",

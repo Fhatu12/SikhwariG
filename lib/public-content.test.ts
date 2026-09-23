@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PUBLIC_SERVICES, SELECTED_WORK } from "@/lib/public-content";
+import { CREDIBILITY_FACTS, PUBLIC_SERVICES, SELECTED_WORK } from "@/lib/public-content";
 
 describe("public repositioning content", () => {
   it("contains the four approved public service areas including hospitality", () => {
@@ -14,6 +14,14 @@ describe("public repositioning content", () => {
   it("keeps Proprietary Trading out of public services", () => {
     const publicCopy = JSON.stringify(PUBLIC_SERVICES);
     expect(publicCopy).not.toMatch(/Proprietary Trading|Treasury/);
+  });
+
+  it("keeps approved credibility facts without public ownership claims", () => {
+    const publicFacts = CREDIBILITY_FACTS.join(" ");
+
+    expect(CREDIBILITY_FACTS).toContain("B-BBEE Level 1 Contributor");
+    expect(publicFacts).not.toMatch(/100% black\s+ownership/i);
+    expect(publicFacts).not.toMatch(/50% black female\s+ownership/i);
   });
 
   it("defines approved selected work status labels", () => {

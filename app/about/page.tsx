@@ -91,12 +91,11 @@ export default async function AboutPage() {
         </div>
         <div className="mt-5 max-w-3xl space-y-4 text-slate-700">
           <p>
-            Sikhwari Group is South Africa-based, 100% black owned and 50% black female owned, with
-            a B-BBEE Level 1 Contributor status recorded as an approved public fact.
+            Sikhwari Group is South Africa-based, with a B-BBEE Level 1 Contributor status recorded
+            as an approved public fact.
           </p>
           <p>
-            The underlying B-BBEE and ownership certificate material is not displayed publicly in
-            this implementation.
+            The underlying certification material is not displayed publicly in this implementation.
           </p>
         </div>
       </Section>
